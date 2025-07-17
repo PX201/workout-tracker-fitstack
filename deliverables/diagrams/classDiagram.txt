@@ -1,0 +1,45 @@
+src
+├───main
+│   └───java
+│       └───learn
+│           └───workout_tracker
+│               │   WorkoutTrackerApp.java        -- app entry point
+│               ├───config
+│               │   └───security
+│               │       JwtConverter.java
+│               │       SecurityConfig.java
+│               │       JwtRequestFilter.java
+│               ├───data
+│               │       RoutineRepository.java
+│               │       RoutineJdbcTempletRepository.java
+│               │       LogRepository.java
+│               │       LogJdbcTempletRepository.java
+│               │       UserRepository.java
+│               │       UserJdbcRepository.java
+│               │       DataException.java
+│               ├───domain
+│               │       UserService.java
+│               │       RoutineService.java
+│               │       LogService.java
+│               ├───models
+│               │       User.java
+│               │       Routine.java
+│               │       Log.java
+│               │       MuscleGroup.java
+│               └───controller
+│                       UserController.java
+│                       RoutineController.java
+│                       LogController.java
+│                       AuthController.java
+└───test
+    └───java
+        └───learn
+            └───workout_tracker
+                ├───data
+                │       RoutineJdbcTempletRepositoryTest.java
+                │       LogJdbcTempletRepositoryTest.java
+                │       UserJdbcRepositoryTest.java
+                └───domain
+                        UserServiceTest.java
+                        RoutineServiceTest.java
+                        LogServiceTest.java

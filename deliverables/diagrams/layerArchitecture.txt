@@ -1,0 +1,62 @@
+      *Client                           *Client
+        |                                  ^
+        | (HTTP Request)                   |
+        |                                  | (HTTP Response)
+        V                                  |
+    RoutineController                   RoutineController
+        |                                  ^
+        |                                  |
+        | (Routine data)                   | (RoutineResult)
+        |                                  |
+        V                                  |
+    RoutineService                      RoutineService
+        |                                  ^
+        | (Routine data)                   | (Routine data)
+        |                                  |
+        V                                  |
+    RoutineJdbcTemplateRepository-----------
+
+
+    
+
+
+     *Client                           *Client
+        |                                  ^
+        | (HTTP Request)                   |
+        |                                  | (HTTP Response)
+        V                                  |
+    UserController                   UserController
+        |                                  ^
+        |                                  |
+        | (User data)                      | (UserResult)
+        |                                  |
+        V                                  |
+    UserService                      UserService
+        |                                  ^
+        | (User data)                      | (User data)
+        |                                  |
+        V                                  |
+    UserJdbcTemplateRepository--------------
+
+
+
+
+
+
+      *Client                           *Client
+        |                                  ^
+        | (HTTP Request)                   |
+        |                                  | (HTTP Response)
+        V                                  |
+    LogController                   LogController
+        |                                  ^
+        |                                  |
+        | (Log data)                       | (LogResult)
+        |                                  |
+        V                                  |
+    LogService                        LogService
+        |                                  ^
+        | (Log data)                       | (Log data)
+        |                                  |
+        V                                  |
+    LogJdbcTemplateRepository---------------
