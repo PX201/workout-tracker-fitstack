@@ -207,3 +207,63 @@ src
 11. Dockerize backend and frontend  
 12. Perform user testing  
 13. Deliver final demo
+
+---
+# Task Breakdown
+
+
+## Setup & Environment
+- **Initialize Maven project, Git repo, and folder structure** – `1.0 hrs`
+- **Set up Spring Boot dependencies, configs** – `1.0 hrs`
+- **Configure MySQL and connect with Spring JDBC** – `1.0 hrs`
+- **Set up React project with routing and Bootstrap** – `2.0 hrs`
+
+## Backend Development - Models
+- **Create entity classes: User, Routine, Log, MuscleGroup** – `1.5 hrs`
+- **Add validation annotations and enums** – `1.5 hrs`
+
+## Backend Development - Database Layer
+- **Create repositories and JDBC implementations** – `3.0 hrs`
+- **Write SQL queries and test them** – `1.5 hrs`
+
+## Backend Development - Service Layer
+- **Implement business logic with validation** – `3.0 hrs`
+- **Write domain result objects and error handling** – `1.5 hrs`
+
+## Backend Development - Controller Layer
+- **Set up REST endpoints for auth, user, routine, log** – `2.5 hrs`
+- **Test endpoints and fix edge cases** – `2.5 hrs`
+
+## Authentication & Security
+- **Add Spring Security config, JWT generation and filters** – `2.5 hrs`
+- **Add role-based access control to endpoints** – `1.0 hrs`
+- **Secure passwords, login/logout flows** – `2.0 hrs`
+
+## Frontend Development - UI
+- **Set up main pages: Login, Register, Dashboard, Log Form, Admin Panel** – `3.0 hrs`
+
+## Frontend Development - Routine & Log
+- **Create forms and views for routines/logs** – `2.5 hrs`
+- **Handle create/edit/delete** – `3.5 hrs`
+
+## Frontend Development - Visualization
+- **Implement GitHub-style dot calendar** – `2.5 hrs`
+- **Integrate react-body-highlighter heatmap** – `2.5 hrs`
+
+## Frontend Development - Admin
+- **Build admin dashboard for managing users and routines** – `3.0 hrs`
+
+## Testing
+- **Write JUnit tests for service and repository layers** – `3.0 hrs`
+- **Test API endpoints manually and write basic integration tests** – `3.0 hrs`
+
+## Dockerization & Deployment
+- **Write Dockerfile for backend and frontend** – `2.0 hrs`
+- **Docker Compose setup for multi-container config** – `1.5 hrs`
+
+## Documentation & Polish
+- **Write project README, setup guide** – `1.0 hrs`
+- **Finalize .md plan and wireframes** – `2.0 hrs`
+
+## Fixes
+- **Allow extra time for bug fixing, final testing, team sync** – `3.0 hrs`
