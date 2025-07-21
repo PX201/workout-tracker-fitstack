@@ -7,9 +7,7 @@ import java.time.LocalDate;
 @Data
 public class User {
 
-
     private long userId;
-
 
     private String username;
 
@@ -28,8 +26,5 @@ public class User {
         if(this.role == null) return false;
         return this.role == role;
     }
-
-
-
 
 }
