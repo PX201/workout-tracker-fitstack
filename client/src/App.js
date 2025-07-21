@@ -1,10 +1,11 @@
 import { Route, BrowserRouter, Routes } from "react-router-dom";
+import Login from "./Login";
 
 function App() {
   return (
     <BrowserRouter>
-      <h1>Workout Tracker Fitstack</h1>
       <Routes>
+        <Route path="/" element={<Login/>}></Route>
       </Routes>
     </BrowserRouter>
   );
