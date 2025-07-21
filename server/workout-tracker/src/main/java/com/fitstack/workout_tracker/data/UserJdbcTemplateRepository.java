@@ -1,4 +1,4 @@
-package com.fitstack.workout_tracker.domain;
+package com.fitstack.workout_tracker.data;
 
 import com.fitstack.workout_tracker.models.User;
 import lombok.RequiredArgsConstructor;
