@@ -3,7 +3,7 @@ src
 │   └───java
 │       └───learn
 │           └───workout_tracker
-│               │   WorkoutTrackerApp.java        -- app entry point
+│               │   WorkoutTrackerApp.java
 │               ├───config
 │               │   └───security
 │               │       JwtConverter.java
@@ -11,9 +11,9 @@ src
 │               │       JwtRequestFilter.java
 │               ├───data
 │               │       RoutineRepository.java
-│               │       RoutineJdbcTempletRepository.java
+│               │       RoutineJdbcTemplateRepository.java
 │               │       LogRepository.java
-│               │       LogJdbcTempletRepository.java
+│               │       LogJdbcTemplateRepository.java
 │               │       UserRepository.java
 │               │       UserJdbcRepository.java
 │               │       DataException.java
@@ -36,8 +36,8 @@ src
         └───learn
             └───workout_tracker
                 ├───data
-                │       RoutineJdbcTempletRepositoryTest.java
-                │       LogJdbcTempletRepositoryTest.java
+                │       RoutineJdbcTemplateRepositoryTest.java
+                │       LogJdbcTemplateRepositoryTest.java
                 │       UserJdbcRepositoryTest.java
                 └───domain
                         UserServiceTest.java
