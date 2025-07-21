@@ -11,8 +11,8 @@ public class RoutineMapper implements RowMapper<Routine> {
     public Routine mapRow(ResultSet resultSet, int i) throws SQLException {
         Routine routine = new Routine();
         routine.setRoutineId(resultSet.getInt("routine_id"));
-        routine.setTitle(resultSet.getString("title"));
         routine.setUserId(resultSet.getInt("user_id"));
+        routine.setTitle(resultSet.getString("title"));
         return routine;
     }
 }
