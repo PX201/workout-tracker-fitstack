@@ -8,11 +8,13 @@ public interface UserRepository {
 
     List<User> findAll();
 
-    User findByUserId();
+    User findByUserId(long userId);
+
+    User findByEmail(String email);
 
     User addUser(User user);
 
-    boolean deleteByUserId();
+    boolean deleteByUserId(long userId);
 
     boolean updateUser(User user);
 
