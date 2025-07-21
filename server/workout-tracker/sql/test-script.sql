@@ -66,8 +66,29 @@ begin
     delete from `user`;
 	alter table `user` auto_increment = 1;
 
-    INSERT INTO muscle_group (name) values ("biceps"), ("pectorals"), ("triceps"), ("glutes"), ("quadriceps");
-insert into muscle_group (name) values ("lat");
+    INSERT INTO muscle_group (name) values
+        ("trapezius"),
+        ("upper-back"),
+        ("lower-back"),
+        ("chest"),
+        ("biceps"),
+        ("triceps"),
+        ("forearm"),
+        ("back-deltoids"),
+        ("front-deltoids"),
+        ("abs"),
+        ("obliques"),
+        ("adductor"),
+        ("abductors"),
+        ("hamstring"),
+        ("quadriceps"),
+        ("calves"),
+        ("gluteal"),
+        ("head"),
+        ("neck"),
+        ("knees"),
+        ("left-soleus"),
+        ("right-soleus");
 
 insert into `user` (username, email, password, role, date_joined, is_active) values
 ("dougwhite", "whitedoug21@gmail.com", "passwordhashed", "ADMIN", "2020-06-30", true),

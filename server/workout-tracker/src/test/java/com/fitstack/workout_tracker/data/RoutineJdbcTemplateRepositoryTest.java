@@ -1,5 +1,6 @@
 package com.fitstack.workout_tracker.data;
 
+import com.fitstack.workout_tracker.models.Muscle;
 import com.fitstack.workout_tracker.models.Routine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,23 +30,40 @@ class RoutineJdbcTemplateRepositoryTest {
     void shouldFindAll() {
         List<Routine> routines = repository.findAll();
         assertNotNull(routines);
-
         assertTrue(routines.size() >= 5 && routines.size() <= 7);
+
+        for (Routine routine : routines) {
+            assertNotNull(routine.getMuscles(), "MuscleGroups should not be null");
+            assertFalse(routine.getMuscles().isEmpty(), "Each routine should have at least one muscle group");
+        }
     }
 
+
 // should find by id??
+    @Test
+    void shouldFindPushDay(){
+        Routine result = repository.findById(1);
+        assertTrue(result.getTitle().equals("Push day"));
+        assertTrue(result.getUserId() == 1);
+    }
+
 
     @Test
     void shouldAdd() {
-        // all fields
         Routine r = new Routine();
         r.setTitle("Mountain climbing");
         r.setUserId(1);
+        r.setMuscles(List.of(Muscle.UPPER_BACK, Muscle.GLUTEAL));
 
         Routine actual = repository.add(r);
+
         assertNotNull(actual);
         assertEquals(NEXT_ID, actual.getRoutineId());
+        assertNotNull(actual.getMuscles());
+        assertTrue(actual.getMuscles().contains(Muscle.UPPER_BACK));
+        assertTrue(actual.getMuscles().contains(Muscle.GLUTEAL));
     }
+
 
     @Test
     void shouldUpdate() {
@@ -53,8 +71,18 @@ class RoutineJdbcTemplateRepositoryTest {
         r.setRoutineId(3);
         r.setUserId(2);
         r.setTitle("Mountain Skiing");
+        r.setMuscles(List.of(Muscle.FOREARM, Muscle.ABS));
+
         assertTrue(repository.update(r));
+
+        // Optional: Fetch and assert values changed as expected
+        Routine updated = repository.findById(3);
+        assertEquals("Mountain Skiing", updated.getTitle());
+        assertEquals(2, updated.getUserId());
+        assertNotNull(updated.getMuscles());
+        assertTrue(updated.getMuscles().containsAll(List.of(Muscle.FOREARM, Muscle.ABS)));
     }
+
 
     @Test
     void shouldDelete() {
