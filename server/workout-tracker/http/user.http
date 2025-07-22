@@ -1,11 +1,44 @@
 @base_url = http://localhost:8080/api
+@access_token = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInVzZXJJZCI6Niwic3ViIjoiaGFtaW5AZW1haWwuY29tIiwiaWF0IjoxNzUzMjIwODY1LCJleHAiOjE3NTMyMjI2NjV9.bmgE55qYgotx1sOG9zMBc2n1CefwyzOU1jwmggIgtVI
 
 // REGISTER A USER 
 POST {{base_url}}/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "username": "aiman",
-  "email": "aiman@email.com",
+  "username": "hamid",
+  "email": "hamin@email.com",
   "password": "hash123456"
 }
+
+###
+
+// LOGIN 
+POST {{base_url}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "hamin@email.com",
+  "password": "hash123456"
+}
+###
+
+// Get User info
+GET {{base_url}}/user/me HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+ 
+###
+
+// Update User Info
+Put {{base_url}}/user/me HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+    "email": "updatedemani@gmail.com",
+    "username": "updatedUsername"
+
+}
+
