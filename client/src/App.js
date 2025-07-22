@@ -8,6 +8,7 @@ import UserForm from "./UserForm";
 import BodyHighlighter from "./BodyHighlighter";
 import Calendar from "./Calendar";
 import AdminUserList from "./AdminUserList";
+import AdminRoutineList from "./AdminRoutineList";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/body" element={<BodyHighlighter />}></Route>
         <Route path="/calendar" element={<Calendar />}></Route>
         <Route path="/admin/users" element={<AdminUserList />}></Route>
+        <Route path="/admin/routines" element={<AdminRoutineList />}></Route>
       </Routes>
     </BrowserRouter>
   );
