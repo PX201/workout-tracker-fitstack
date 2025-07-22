@@ -7,6 +7,7 @@ import RoutineForm from "./RoutineForm";
 import UserForm from "./UserForm";
 import BodyHighlighter from "./BodyHighlighter";
 import Calendar from "./Calendar";
+import AdminUserList from "./AdminUserList";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/edit" element={<UserForm/>}></Route>
         <Route path="/body" element={<BodyHighlighter />}></Route>
         <Route path="/calendar" element={<Calendar />}></Route>
+        <Route path="/admin/users" element={<AdminUserList />}></Route>
       </Routes>
     </BrowserRouter>
   );
