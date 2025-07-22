@@ -1,12 +1,16 @@
 package com.fitstack.workout_tracker.domain;
 
+import com.fitstack.workout_tracker.security.JwtService;
 import com.fitstack.workout_tracker.data.UserRepository;
+import com.fitstack.workout_tracker.dto.AuthRequest;
+import com.fitstack.workout_tracker.dto.JwtResponse;
 import com.fitstack.workout_tracker.dto.RegisterRequest;
 import com.fitstack.workout_tracker.dto.UserUpdateRequest;
 import com.fitstack.workout_tracker.exception.UserNotFoundException;
 import com.fitstack.workout_tracker.models.Role;
 import com.fitstack.workout_tracker.models.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,6 +21,8 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
 
     public List<User> findAll() {
@@ -49,7 +55,7 @@ public class UserService {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword()); // hash later
+        user.setPassword(passwordEncoder.encode(request.getPassword())); // done
         user.setDateJoined(LocalDate.now());
         user.setActive(true);
         user.setRole(Role.USER);
@@ -121,6 +127,26 @@ public class UserService {
 
         existingUser.setRole(role);
         return userRepository.updateUser(existingUser);
+    }
+
+
+    public Result<JwtResponse> login(AuthRequest request) {
+        Result<JwtResponse> result = new Result<>();
+
+        User user = userRepository.findByEmail(request.getEmail());
+        if (user == null || !user.isActive()) {
+            result.addMessage("Invalid email or account inactive.", ResultType.NOT_FOUND);
+            return result;
+        }
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            result.addMessage("Invalid password.", ResultType.INVALID);
+            return result;
+        }
+
+        String token = jwtService.generateToken(user);
+        result.setPayload(new JwtResponse(token, user));
+        return result;
     }
 
 
