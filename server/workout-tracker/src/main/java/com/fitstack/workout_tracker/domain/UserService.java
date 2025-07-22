@@ -70,13 +70,13 @@ public class UserService {
         }
 
         if(!existingUser.getEmail().equalsIgnoreCase(userReq.getEmail()) && userRepository.findByEmail(userReq.getEmail()) != null){
-            result.addErrorMessage("Email already in use.");
+            result.addErrorMessage("Email already in use");
         }
 
         if(!existingUser.getUsername().equalsIgnoreCase(userReq.getUsername()) &&
                 userRepository.findAll().stream().anyMatch(u ->
                         u.getUsername().equalsIgnoreCase(userReq.getUsername()))){
-            result.addErrorMessage("Username already in use.");
+            result.addErrorMessage("Username already in use");
         }
 
         // Update user info
