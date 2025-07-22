@@ -7,12 +7,15 @@ import RoutineForm from "./RoutineForm";
 import UserForm from "./UserForm";
 import BodyHighlighter from "./BodyHighlighter";
 import Calendar from "./Calendar";
+import AdminUserList from "./AdminUserList";
+import AdminRoutineList from "./AdminRoutineList";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login/>}></Route>
+        <Route path="/login/:username" element={<Login/>}></Route>
         <Route path="/registration" element={<Registration/>}></Route>
         <Route path="/profile" element={<Profile/>}></Route>
         <Route path="/log/add" element={<LogForm/>}></Route>
@@ -20,6 +23,8 @@ function App() {
         <Route path="/edit" element={<UserForm/>}></Route>
         <Route path="/body" element={<BodyHighlighter />}></Route>
         <Route path="/calendar" element={<Calendar />}></Route>
+        <Route path="/admin/users" element={<AdminUserList />}></Route>
+        <Route path="/admin/routines" element={<AdminRoutineList />}></Route>
       </Routes>
     </BrowserRouter>
   );

@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 function Login() {
+  const { username } = useParams();
 
   const handleSubmit = () => {
     // TODO: handle login
@@ -11,6 +12,13 @@ function Login() {
       <section className="container-sm mt-5">
         <div className="text-center mb-4">
           <h1 className="mb-4">Fitstack Workout Tracker</h1>
+          {username && (
+          <div className="row d-flex justify-content-center">
+            <div className="alert alert-success mt-4 mb-4 col-4">
+               {username} registered successfully!
+            </div>
+          </div>
+          )}
           <h2>Login:</h2>
         </div>
         <div className="row">
