@@ -79,7 +79,7 @@ public class LogService {
         if (log.getRoutineTitle() != null && !log.getRoutineTitle().isBlank()) {
             result.addMessage("Log title should not be provided", ResultType.INVALID);
         }
-        if(log.getDate() == null || log.getDate().isAfter(LocalDate.now())){
+        if(log.getDate() == null || log.getDate().toString().isBlank() || log.getDate().isAfter(LocalDate.now())){
             result.addMessage("Log's date must be filled and not in the future", ResultType.INVALID);
             return result;
         }
