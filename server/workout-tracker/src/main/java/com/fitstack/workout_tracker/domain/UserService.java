@@ -1,11 +1,8 @@
 package com.fitstack.workout_tracker.domain;
 
+import com.fitstack.workout_tracker.dto.*;
 import com.fitstack.workout_tracker.security.JwtService;
 import com.fitstack.workout_tracker.data.UserRepository;
-import com.fitstack.workout_tracker.dto.AuthRequest;
-import com.fitstack.workout_tracker.dto.JwtResponse;
-import com.fitstack.workout_tracker.dto.RegisterRequest;
-import com.fitstack.workout_tracker.dto.UserUpdateRequest;
 import com.fitstack.workout_tracker.exception.UserNotFoundException;
 import com.fitstack.workout_tracker.models.Role;
 import com.fitstack.workout_tracker.models.User;
@@ -105,9 +102,22 @@ public class UserService {
         return userRepository.deleteByUserId(userId);
     }
 
-    // for later: implement change password
-    public boolean changePassword(User user, String newPassword){
-        return false;
+
+    public Result<Void> changePassword(User user, PasswordChangeRequest request){
+        Result<Void> result = new Result<>();
+        if(!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())){
+            result.addErrorMessage("Wrong current password");
+            return result;
+        }
+        // set the new password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        boolean updated = userRepository.updateUser(user);
+
+        if(!updated){
+            result.addErrorMessage("Something went wrong!");
+        }
+
+        return result;
     }
 
     // for later: implement reactivate/deactivate user
