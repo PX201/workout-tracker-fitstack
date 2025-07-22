@@ -28,7 +28,7 @@ function Login() {
               <Link
                 type="button"
                 className="btn btn-dark"
-                to={"/"}
+                to={"/profile"}
               >
                 Login
               </Link>
