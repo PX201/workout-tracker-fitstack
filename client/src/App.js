@@ -4,6 +4,7 @@ import Registration from "./Registration";
 import Profile from "./Profile";
 import LogForm from "./LogForm";
 import RoutineForm from "./RoutineForm";
+import UserForm from "./UserForm";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/profile" element={<Profile/>}></Route>
         <Route path="/log/add" element={<LogForm/>}></Route>
         <Route path="/routine/add" element={<RoutineForm/>}></Route>
+        <Route path="/edit" element={<UserForm/>}></Route>
       </Routes>
     </BrowserRouter>
   );
