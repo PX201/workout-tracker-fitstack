@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import UserNavbar from "./UserNavbar";
 
 function UserForm() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ function UserForm() {
 
   return (
     <>
+      <UserNavbar />
       <section className="container-sm mt-5">
         <div className="text-center mb-4">
           <h2>Edit User:</h2>

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import UserNavbar from "./UserNavbar";
 
 
 function LogForm() {
   const [routines, setRoutines] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // TODO: replace with HTTP request to get routines
@@ -14,12 +16,15 @@ function LogForm() {
     ]);
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
     // TODO: add log with HTTP request
+    event.preventDefault();
+    navigate("/profile");
   };
 
   return (
     <>
+      <UserNavbar />
       <section className="container-sm mt-5">
         <div className="text-center mb-4">
           <h2>Add Log</h2>
@@ -50,13 +55,12 @@ function LogForm() {
               <label htmlFor="Notes">Notes</label>
               <textarea type="text" className="form-control" rows="3" id="Notes" />
             </fieldset>
-            <Link
-              type="button"
+            <button
+              type="submit"
               className="btn btn-outline-success me-2"
-              to={"/profile"}
             >
               Add Log
-            </Link>
+            </button>
             <Link
               type="button"
               className="btn btn-outline-danger"

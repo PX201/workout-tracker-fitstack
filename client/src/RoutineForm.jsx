@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import UserNavbar from "./UserNavbar";
 
 
 function RoutineForm() {
   const [routines, setRoutines] = useState([]);
   const muscles = ["muscle 1", "muscle 2", "muscle 3", "muscle 4", "muscle 5"];
+  const navigate = useNavigate();
 
   useEffect(() => {
     // TODO: replace with HTTP request to get routines (and muscles)
@@ -15,12 +17,15 @@ function RoutineForm() {
     ]);
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
     // TODO: add routine with HTTP request
+    event.preventDefault();
+    navigate("/profile");
   };
 
   return (
     <>
+      <UserNavbar />
       <section className="container-sm mt-5">
         <div className="row justify-content-around">
 
@@ -65,13 +70,12 @@ function RoutineForm() {
                   </fieldset>
                 );
               })}
-              <Link
-                type="button"
+              <button
+                type="submit"
                 className="btn btn-outline-success me-2"
-                to={"/profile"}
               >
                 Add Routine
-              </Link>
+              </button>
               <Link
                 type="button"
                 className="btn btn-outline-danger"
