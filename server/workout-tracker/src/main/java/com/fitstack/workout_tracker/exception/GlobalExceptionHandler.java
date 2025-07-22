@@ -24,4 +24,8 @@ public class GlobalExceptionHandler {
         return ErrorResponse.build(result);
     }
 
+    public ResponseEntity<Object> handleUserNotFound(UserNotFoundException ex){
+        return ErrorResponse.build(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
 }
