@@ -1,5 +1,9 @@
 package com.fitstack.workout_tracker.models;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -22,9 +26,8 @@ public class User {
 
     private boolean isActive;
 
-    private boolean hasRole(Role role){
-        if(this.role == null) return false;
-        return this.role == role;
+    public boolean hasRole(Role role) {
+        return this.role != null && this.role == role;
     }
 
 }

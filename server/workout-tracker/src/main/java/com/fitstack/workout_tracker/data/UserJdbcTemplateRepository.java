@@ -23,7 +23,7 @@ public class UserJdbcTemplateRepository implements UserRepository{
 
     @Override
     public List<User> findAll() {
-        final String sql = "select * from `user`;";
+        final String sql = "select user_id, username, email, password, role, date_joined, is_active from `user`;";
         return jdbcTemplate.query(sql, new UserMapper());
     }
 

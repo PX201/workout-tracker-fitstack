@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,11 +20,11 @@ class UserJdbcTemplateRepositoryTest {
     UserRepository repository;
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    KnownGoodState knownGoodState;
 
     @BeforeEach
-    void resetKnownGoodState() {
-        jdbcTemplate.execute("CALL set_known_good_state();");
+    void setup() {
+        knownGoodState.set();
     }
 
     @Test
@@ -37,10 +36,10 @@ class UserJdbcTemplateRepositoryTest {
 
     @Test
     void findByUserId_shouldReturnCorrectUser() {
-        User user = repository.findByUserId(1);
+        User user = repository.findByUserId(2);
         assertNotNull(user);
-        assertEquals("dougwhite", user.getUsername());
-        assertEquals("whitedoug21@gmail.com", user.getEmail());
+        assertEquals("aiman", user.getUsername());
+        assertEquals("aiman@gmail.com", user.getEmail());
     }
 
     @Test
