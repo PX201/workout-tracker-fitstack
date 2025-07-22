@@ -1,0 +1,83 @@
+@base_url = http://localhost:8080/api/routine
+
+// findAll
+GET {{base_url}} HTTP/1.1
+
+// findByUser
+###
+GET {{base_url}}/user/1 HTTP/1.1
+
+// findByUser returning nothing
+###
+GET {{base_url}}/user/99 HTTP/1.1
+
+// findById
+###
+GET {{base_url}}/1 HTTP/1.1
+
+// findById returning nothing
+###
+GET {{base_url}}/99 HTTP/1.1
+
+// addRoutine (make sure user 1 is set first)
+###
+POST {{base_url}}
+Content-Type: application/json
+
+{
+  "title": "Routine 1",
+  "userId": 1,
+  "muscles": [
+    "TRAPEZIUS",
+    "UPPER_BACK",
+    "LOWER_BACK"
+  ]
+}
+
+// addRoutine unhappy path
+###
+POST {{base_url}}
+Content-Type: application/json
+
+{
+  "muscles": [
+  ]
+}
+
+// updateRoutine
+###
+PUT {{base_url}}/1
+Content-Type: application/json
+
+{
+  "routineId": 1,
+  "title": "Routine 2",
+  "userId": 1,
+  "muscles": [
+    "TRAPEZIUS",
+    "UPPER_BACK",
+    "LOWER_BACK",
+    "NECK"
+  ]
+}
+
+// updateRoutine unhappy path
+###
+PUT {{base_url}}/99
+Content-Type: application/json
+
+{
+  "routineId": 99,
+  "title": "Routine 2",
+  "userId": 1,
+  "muscles": [
+    "TRAPEZIUS",
+    "UPPER_BACK",
+    "LOWER_BACK",
+    "NECK"
+  ]
+}
+
+// deleteRoutine
+###
+DELETE {{base_url}}/1
