@@ -1,9 +1,5 @@
 package com.fitstack.workout_tracker.models;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDate;
