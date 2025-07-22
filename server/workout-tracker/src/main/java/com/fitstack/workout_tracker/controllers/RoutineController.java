@@ -65,23 +65,23 @@ public class RoutineController {
     //@GetMapping("/admin/routine/{routineId}")
     //public Routine findByRoutineIdAdmin(@PathVariable long routineId) { return routineService.findById(routineId); }
 
-    @PutMapping("/admin/routine/{routineId}")
-    public ResponseEntity<Object> updateRoutineAdmin(@PathVariable int routineId, @RequestBody Routine routine) {
-        if (routineId != routine.getRoutineId()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-        Result<Routine> result = routineService.updateRoutine(routine);
-        if (result.isSuccess()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ErrorResponse.build(result);
-    }
+//    @PutMapping("/admin/routine/{routineId}")
+//    public ResponseEntity<Object> updateRoutineAdmin(@PathVariable int routineId, @RequestBody Routine routine) {
+//        if (routineId != routine.getRoutineId()) {
+//            return new ResponseEntity<>(HttpStatus.CONFLICT);
+//        }
+//        Result<Routine> result = routineService.updateRoutine(routine);
+//        if (result.isSuccess()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//        return ErrorResponse.build(result);
+//    }
 
-    @DeleteMapping("/admin/routine/{routineId}")
-    public ResponseEntity<Void> deleteByIdAdmin(@PathVariable int routineId) {
-        if (routineService.deleteRoutine(routineId)) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+//    @DeleteMapping("/admin/routine/{routineId}")
+//    public ResponseEntity<Void> deleteByIdAdmin(@PathVariable int routineId) {
+//        if (routineService.deleteRoutine(routineId)) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//    }
 }
