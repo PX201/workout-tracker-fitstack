@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import AdminNavbar from "./AdminNavbar";
 
 function AdminRoutineList() {
   const [routines, setRoutines] = useState([]);
@@ -14,6 +15,7 @@ function AdminRoutineList() {
 
   return (
     <>
+      <AdminNavbar />
       <section className="container d-flex justify-content-center">
         <div className="col-8">
           <div className="text-center mb-4">
