@@ -5,6 +5,7 @@ import com.fitstack.workout_tracker.dto.RegisterRequest;
 import com.fitstack.workout_tracker.models.Role;
 import com.fitstack.workout_tracker.models.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
+    @Autowired
     private final UserRepository userRepository;
 
 
@@ -30,20 +32,32 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public User register(RegisterRequest request) {
+    public Result<User> register(RegisterRequest request) {
+        Result<User> result = new Result<>();
+
         if (userRepository.findByEmail(request.getEmail()) != null) {
-            throw new DuplicateKeyException("Email already exists");
+            result.addErrorMessage("Email already exists");
+        }
+
+        if (userRepository.findAll().stream().anyMatch(u -> u.getUsername().equals(request.getUsername()))) {
+            result.addErrorMessage("Username already exists");
+        }
+
+        if (!result.isSuccess()) {
+            return result;
         }
 
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword()); // need to be hashed later
+        user.setPassword(request.getPassword()); // hash later
         user.setDateJoined(LocalDate.now());
         user.setActive(true);
-        user.setRole(Role.USER); // By default, we give any new user the role: `USER`
+        user.setRole(Role.USER);
 
-        return userRepository.addUser(user);
+        user = userRepository.addUser(user);
+        result.setPayload(user);
+        return result;
     }
 
     public boolean update(User user) {
