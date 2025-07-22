@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Model from 'react-body-highlighter';
+import UserNavbar from "./UserNavbar";
 
 function BodyHighlighter() {
   const [body, setBody] = useState([]);
@@ -22,7 +23,8 @@ function BodyHighlighter() {
 
   return (
     <>
-      <section className="container">
+      <UserNavbar />
+      <section className="container mt-5">
         <h2 className="text-center">Muscle Groups Worked On</h2>
         <div className="row">
           <div className="col-2"></div>
