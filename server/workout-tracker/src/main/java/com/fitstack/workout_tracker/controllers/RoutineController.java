@@ -14,23 +14,21 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/routine")
+@RequestMapping("api")
 public class RoutineController {
 
     @Autowired
     RoutineService routineService;
 
-    @GetMapping
-    public List<Routine> findAll() { return routineService.findAll(); }
+    // USER OPERATIONS
+    @GetMapping("/user/{userId}/routine")
+    public List<Routine> findByUserIdUser(@PathVariable long userId) { return routineService.findByUserId(userId); }
 
-    @GetMapping("/user/{userId}")
-    public List<Routine> findByUserId(@PathVariable long userId) { return routineService.findByUserId(userId); }
+    //@GetMapping("/user/{userId}/routine/{routineId}")
+    //public Routine findByRoutineIdUser(@PathVariable long routineId) { return routineService.findById(routineId); }
 
-    @GetMapping("{routineId}")
-    public Routine findById(@PathVariable long routineId) { return routineService.findById(routineId); }
-
-    @PostMapping
-    public ResponseEntity<?> addRoutine(@RequestBody Routine routine) {
+    @PostMapping("/user/routine")
+    public ResponseEntity<?> addRoutineUser(@RequestBody Routine routine) {
         Result<Routine> result = routineService.addRoutine(routine);
         if (result.isSuccess()) {
             return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
@@ -38,8 +36,8 @@ public class RoutineController {
         return ErrorResponse.build(result);
     }
 
-    @PutMapping("/{routineId}")
-    public ResponseEntity<Object> updateRoutine(@PathVariable int routineId, @RequestBody Routine routine) {
+    @PutMapping("/user/routine/{routineId}")
+    public ResponseEntity<Object> updateRoutineUser(@PathVariable int routineId, @RequestBody Routine routine) {
         if (routineId != routine.getRoutineId()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -50,8 +48,37 @@ public class RoutineController {
         return ErrorResponse.build(result);
     }
 
-    @DeleteMapping("/{routineId}")
-    public ResponseEntity<Void> deleteById(@PathVariable int routineId) {
+    @DeleteMapping("/user/routine/{routineId}")
+    public ResponseEntity<Void> deleteByIdUser(@PathVariable int routineId) {
+        if (routineService.deleteRoutine(routineId)) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+
+    
+    // ADMIN OPERATIONS
+    @GetMapping("/admin/routine")
+    public List<Routine> findAll() { return routineService.findAll(); }
+
+    //@GetMapping("/admin/routine/{routineId}")
+    //public Routine findByRoutineIdAdmin(@PathVariable long routineId) { return routineService.findById(routineId); }
+
+    @PutMapping("/admin/routine/{routineId}")
+    public ResponseEntity<Object> updateRoutineAdmin(@PathVariable int routineId, @RequestBody Routine routine) {
+        if (routineId != routine.getRoutineId()) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        Result<Routine> result = routineService.updateRoutine(routine);
+        if (result.isSuccess()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ErrorResponse.build(result);
+    }
+
+    @DeleteMapping("/admin/routine/{routineId}")
+    public ResponseEntity<Void> deleteByIdAdmin(@PathVariable int routineId) {
         if (routineService.deleteRoutine(routineId)) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

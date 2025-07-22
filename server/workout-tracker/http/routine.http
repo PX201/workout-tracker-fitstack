@@ -1,27 +1,14 @@
-@base_url = http://localhost:8080/api/routine
+@user_url = http://localhost:8080/api/user/
+@admin_url = http://localhost:8080/api/admin/
 
-// findAll
-GET {{base_url}} HTTP/1.1
+// USER OPERATIONS
 
-// findByUser
+// findByUserIdUser
+GET {{user_url}}1/routine
+
+// addRoutineUser
 ###
-GET {{base_url}}/user/1 HTTP/1.1
-
-// findByUser returning nothing
-###
-GET {{base_url}}/user/99 HTTP/1.1
-
-// findById
-###
-GET {{base_url}}/1 HTTP/1.1
-
-// findById returning nothing
-###
-GET {{base_url}}/99 HTTP/1.1
-
-// addRoutine (make sure user 1 is set first)
-###
-POST {{base_url}}
+POST {{user_url}}routine
 Content-Type: application/json
 
 {
@@ -34,9 +21,9 @@ Content-Type: application/json
   ]
 }
 
-// addRoutine unhappy path
+// addRoutineUser unhappy path
 ###
-POST {{base_url}}
+POST {{user_url}}routine
 Content-Type: application/json
 
 {
@@ -44,9 +31,9 @@ Content-Type: application/json
   ]
 }
 
-// updateRoutine
+// updateRoutineUser
 ###
-PUT {{base_url}}/1
+PUT {{user_url}}routine/1
 Content-Type: application/json
 
 {
@@ -61,9 +48,9 @@ Content-Type: application/json
   ]
 }
 
-// updateRoutine unhappy path
+// updateRoutineUser unhappy path
 ###
-PUT {{base_url}}/99
+PUT {{user_url}}routine/99
 Content-Type: application/json
 
 {
@@ -78,6 +65,53 @@ Content-Type: application/json
   ]
 }
 
-// deleteRoutine
+// deleteRoutineUser
 ###
-DELETE {{base_url}}/1
+DELETE {{user_url}}routine/1
+
+
+
+// ADMIN OPERATIONS
+
+// findall
+###
+GET {{admin_url}}routin
+
+
+// updateRoutineAdmin
+###
+PUT {{admin_url}}routine/1
+Content-Type: application/json
+
+{
+  "routineId": 1,
+  "title": "Routine 2",
+  "userId": 1,
+  "muscles": [
+    "TRAPEZIUS",
+    "UPPER_BACK",
+    "LOWER_BACK",
+    "NECK"
+  ]
+}
+
+// updateRoutineAdmin unhappy path
+###
+PUT {{admin_url}}routine/99
+Content-Type: application/json
+
+{
+  "routineId": 99,
+  "title": "Routine 2",
+  "userId": 1,
+  "muscles": [
+    "TRAPEZIUS",
+    "UPPER_BACK",
+    "LOWER_BACK",
+    "NECK"
+  ]
+}
+
+// deleteRoutineAdmin
+###
+DELETE {{admin_url}}routine/1
