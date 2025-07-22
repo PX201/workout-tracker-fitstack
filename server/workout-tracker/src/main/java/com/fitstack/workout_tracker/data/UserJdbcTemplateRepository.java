@@ -66,7 +66,7 @@ public class UserJdbcTemplateRepository implements UserRepository{
             return null;
         }
 
-        user.setUserId(keyHolder.getKey().intValue());
+        user.setUserId(keyHolder.getKey().longValue());
         return user;
     }
 
