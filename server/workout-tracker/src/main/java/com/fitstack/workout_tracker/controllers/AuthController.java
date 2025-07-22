@@ -2,6 +2,8 @@ package com.fitstack.workout_tracker.controllers;
 
 import com.fitstack.workout_tracker.domain.Result;
 import com.fitstack.workout_tracker.domain.UserService;
+import com.fitstack.workout_tracker.dto.AuthRequest;
+import com.fitstack.workout_tracker.dto.JwtResponse;
 import com.fitstack.workout_tracker.dto.RegisterRequest;
 import com.fitstack.workout_tracker.models.User;
 import com.fitstack.workout_tracker.utils.ErrorResponse;
@@ -32,5 +34,13 @@ public class AuthController {
         return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request){
+        Result<JwtResponse> result = userService.login(request);
+        if (!result.isSuccess()) {
+            return ErrorResponse.build(result);
+        }
+        return new ResponseEntity<>(result.getPayload(), HttpStatus.ACCEPTED);
+    }
 
 }
