@@ -39,7 +39,7 @@ function RoutineForm() {
                   <div key={r.routine_id} className="border border-muted rounded mb-2 p-2">
                     <h4>{r.title}</h4>
                     <p>Muscle Groups:
-                      {r.muscles.map(m => { return <>{m}, </> })}
+                      {r.muscles.map(m => { return <span key={m}>{m},</span> })}
                     </p>
                     <button className="btn btn-outline-warning me-2">
                       Edit
@@ -66,7 +66,7 @@ function RoutineForm() {
                 return (
                   <fieldset key={m}>
                     <label htmlFor={m}>{m}</label>
-                    <input type="checkbox" class="form-check-input" value="" id={m} />
+                    <input type="checkbox" className="form-check-input" value="" id={m} />
                   </fieldset>
                 );
               })}

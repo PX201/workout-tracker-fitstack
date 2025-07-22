@@ -1,8 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function UserNavbar() {
   const [user, setUser] = useState("<username>");
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to log out?")) {
+      navigate("/");
+    }
+  }
 
   return (
     <nav className="navbar navbar-expand-lg bg-light">
@@ -11,7 +18,8 @@ function UserNavbar() {
           <Link type="button" className="active nav-link" to={'/profile'}>Profile</Link>
           <Link type="button" className="btn btn-dark ms-4" to={'/log/add'}>Add Log</Link>
           <Link type="button" className="btn btn-dark ms-4" to={'/routine/add'}>Add Routine</Link>
-          <Link type="button" className="btn btn-dark ms-4 me-4" to={'/edit'}>Edit User</Link>
+          <Link type="button" className="btn btn-dark ms-4" to={'/edit'}>Edit User</Link>
+          <button className="btn btn-danger ms-4 me-4" onClick={handleLogout}>Logout</button>
       </div>
     </nav>
   );
