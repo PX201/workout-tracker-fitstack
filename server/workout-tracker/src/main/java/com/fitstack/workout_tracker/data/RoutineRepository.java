@@ -7,11 +7,13 @@ import java.util.List;
 public interface RoutineRepository {
     List<Routine> findAll();
 
-    Routine findById(int routineId);
+    List<Routine> findByUserId(long userId);
+
+    Routine findById(long routineId);
 
     Routine add(Routine routine);
 
     boolean update(Routine routine);
 
-    boolean deleteById(int routineId);
+    boolean deleteById(long routineId);
 }

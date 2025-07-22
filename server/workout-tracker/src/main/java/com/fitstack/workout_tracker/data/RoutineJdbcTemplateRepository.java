@@ -3,6 +3,8 @@ package com.fitstack.workout_tracker.data;
 import com.fitstack.workout_tracker.data.mappers.RoutineMapper;
 import com.fitstack.workout_tracker.models.Muscle;
 import com.fitstack.workout_tracker.models.Routine;
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -14,13 +16,9 @@ import java.sql.Statement;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class RoutineJdbcTemplateRepository implements RoutineRepository {
-
     private final JdbcTemplate jdbcTemplate;
-
-    public RoutineJdbcTemplateRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public List<Routine> findAll() {
@@ -35,7 +33,19 @@ public class RoutineJdbcTemplateRepository implements RoutineRepository {
     }
 
     @Override
-    public Routine findById(int routineId) {
+    public List<Routine> findByUserId(long userId) {
+        final String sql = "select routine_id, user_id, title from routine where user_id = ?;";
+        List<Routine> routines = jdbcTemplate.query(sql, new RoutineMapper(), userId);
+
+        for (Routine routine : routines) {
+            routine.setMuscles(findMusclesForRoutine(routine.getRoutineId()));
+        }
+
+        return routines;
+    }
+
+    @Override
+    public Routine findById(long routineId) {
         final String sql = "select routine_id, user_id, title from routine where routine_id = ?;";
 
         Routine routine = jdbcTemplate.query(sql, new RoutineMapper(), routineId).stream()
@@ -43,7 +53,7 @@ public class RoutineJdbcTemplateRepository implements RoutineRepository {
                 .orElse(null);
 
         if (routine != null) {
-            routine.setMuscles(getMusclesForRoutine(routineId));
+            routine.setMuscles(findMusclesForRoutine(routineId));
         }
 
         return routine;
@@ -54,29 +64,34 @@ public class RoutineJdbcTemplateRepository implements RoutineRepository {
     public Routine add(Routine routine) {
         final String sql = "insert into routine (user_id, title) values (?,?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        int rowsAffected = jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, routine.getUserId());
-            ps.setString(2, routine.getTitle());
-            return ps;
-        }, keyHolder);
+        try {
+            int rowsAffected = jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setLong(1, routine.getUserId());
+                ps.setString(2, routine.getTitle());
+                return ps;
+            }, keyHolder);
 
-        if (rowsAffected <= 0) {
+            if (rowsAffected <= 0 || keyHolder.getKey() == null) {
+                return null;
+            }
+
+            routine.setRoutineId(keyHolder.getKey().longValue());
+
+            for (Muscle muscle : routine.getMuscles()) {
+                jdbcTemplate.update(
+                        "INSERT INTO routine_muscle (routine_id, muscle_id) VALUES (?, ?);",
+                        routine.getRoutineId(),
+                        muscle.getId()
+                );
+            }
+
+            return routine;
+        } catch (DataAccessException ex) {
             return null;
         }
-
-        routine.setRoutineId(keyHolder.getKey().intValue());
-
-        for (Muscle muscle : routine.getMuscles()) {
-            jdbcTemplate.update(
-                    "INSERT INTO routine_muscle (routine_id, muscle_id) VALUES (?, ?)",
-                    routine.getRoutineId(),
-                    muscle.getId()
-            );
-        }
-
-        return routine;
     }
+
 
     @Override
     @Transactional
@@ -98,14 +113,14 @@ public class RoutineJdbcTemplateRepository implements RoutineRepository {
 
     @Override
     @Transactional
-    public boolean deleteById(int routineId) {
+    public boolean deleteById(long routineId) {
         jdbcTemplate.update("delete from routine_muscle where routine_id = ?;", routineId);
         jdbcTemplate.update("delete from log where routine_id = ?;", routineId);
         return jdbcTemplate.update("delete from routine where routine_id = ?;", routineId) > 0;
     }
 
     // HELPER METHODS
-    private List<Muscle> findMusclesForRoutine(int routineId) {
+    private List<Muscle> findMusclesForRoutine(long routineId) {
         final String sql = "select muscle_id from routine_muscle where routine_id = ?;";
 
         return jdbcTemplate.query(
@@ -116,23 +131,13 @@ public class RoutineJdbcTemplateRepository implements RoutineRepository {
     }
 
     private void updateRoutineMuscles(Routine routine) {
-        // First delete old muscles
-        final String deleteSql = "DELETE FROM routine_muscle WHERE routine_id = ?";
+        final String deleteSql = "DELETE FROM routine_muscle WHERE routine_id = ?;";
         jdbcTemplate.update(deleteSql, routine.getRoutineId());
 
-        // Then insert new ones
-        final String insertSql = "INSERT INTO routine_muscle (routine_id, muscle_id) VALUES (?, ?)";
+        final String insertSql = "INSERT INTO routine_muscle (routine_id, muscle_id) VALUES (?, ?);";
 
         for (Muscle muscle : routine.getMuscles()) {
             jdbcTemplate.update(insertSql, routine.getRoutineId(), muscle.getId());
         }
     }
-
-    private List<Muscle> getMusclesForRoutine(int routineId) {
-        final String sql = "select m.muscle_id from muscle_group m inner join routine_muscle rm on m.muscle_id = rm.muscle_id where rm.routine_id = ?;";
-
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-                Muscle.fromId(rs.getInt("muscle_id")), routineId);
-    }
-
 }

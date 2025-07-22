@@ -10,8 +10,8 @@ public class RoutineMapper implements RowMapper<Routine> {
     @Override
     public Routine mapRow(ResultSet resultSet, int i) throws SQLException {
         Routine routine = new Routine();
-        routine.setRoutineId(resultSet.getInt("routine_id"));
-        routine.setUserId(resultSet.getInt("user_id"));
+        routine.setRoutineId(resultSet.getLong("routine_id"));
+        routine.setUserId(resultSet.getLong("user_id"));
         routine.setTitle(resultSet.getString("title"));
         return routine;
     }
