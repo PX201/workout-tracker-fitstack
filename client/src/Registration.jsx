@@ -41,7 +41,7 @@ function Registration() {
         }
       }).then(data => {
         if (data.userId) {
-          navigate("/");
+          navigate(`/login/${data.username}`);
         } else if (data.messages) {
           setErrors(data);
         }
