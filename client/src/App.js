@@ -5,6 +5,7 @@ import Profile from "./Profile";
 import LogForm from "./LogForm";
 import RoutineForm from "./RoutineForm";
 import UserForm from "./UserForm";
+import BodyHighlighter from "./BodyHighlighter";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/log/add" element={<LogForm/>}></Route>
         <Route path="/routine/add" element={<RoutineForm/>}></Route>
         <Route path="/edit" element={<UserForm/>}></Route>
+        <Route path="/body" element={<BodyHighlighter />}></Route>
       </Routes>
     </BrowserRouter>
   );
