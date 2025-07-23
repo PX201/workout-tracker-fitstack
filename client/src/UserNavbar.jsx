@@ -27,8 +27,10 @@ function UserNavbar() {
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
       // remove user token
-      sessionStorage.removeItem("me");
-      navigate("/");
+      sessionStorage.clear();
+      // force reload and go back to home
+      window.location.href("/")
+      //navigate("/");
     }
   }
 

@@ -9,22 +9,45 @@ import BodyHighlighter from "./BodyHighlighter";
 import Calendar from "./Calendar";
 import AdminUserList from "./AdminUserList";
 import AdminRoutineList from "./AdminRoutineList";
+import Navbar from "./Navbar";
+import Home from "./Home";
+import NotFound from "./NotFound";
 
 function App() {
+  const userRole = sessionStorage.getItem("user_role");
   return (
     <BrowserRouter>
+      <Navbar/>
       <Routes>
-        <Route path="/" element={<Login/>}></Route>
-        <Route path="/login/:username" element={<Login/>}></Route>
-        <Route path="/registration" element={<Registration/>}></Route>
-        <Route path="/profile" element={<Profile/>}></Route>
-        <Route path="/log/add" element={<LogForm/>}></Route>
-        <Route path="/routine/add" element={<RoutineForm/>}></Route>
-        <Route path="/edit" element={<UserForm/>}></Route>
-        <Route path="/body" element={<BodyHighlighter />}></Route>
-        <Route path="/calendar" element={<Calendar />}></Route>
-        <Route path="/admin/users" element={<AdminUserList />}></Route>
-        <Route path="/admin/routines" element={<AdminRoutineList />}></Route>
+        {/* TODO: if user not login display this routes only: '/', '/login', '/register',  '/*' (Not found page)*/}
+        {/* TODO: if user loged in as USER display user routes:   '/profile', '/edit', '/log',/calendar, '/routine' ..  */}
+        {/* TODO: if user loged in as ADMIN display user/admin routes: "/admin/routines", "/admin/users", '/profile', '/edit', '/log',/calendar, '/routine' ..  */}
+          {!userRole ? (
+            <>
+              <Route path="/" element={<Login />} />
+              <Route path="/login/:username" element={<Login/>}></Route>
+              <Route path="/registration" element={<Registration/>}></Route>
+            </>
+          ) : (
+            <>
+              <Route path="/" element={<Home />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/log/add" element={<LogForm />} />
+              <Route path="/routine/add" element={<RoutineForm />} />
+              <Route path="/edit" element={<UserForm />} />
+              <Route path="/body" element={<BodyHighlighter />} />
+              <Route path="/calendar" element={<Calendar />} />
+            </>
+          )}
+
+          {userRole === "ADMIN" && (
+            <>
+              <Route path="/admin/users" element={<AdminUserList />} />
+              <Route path="/admin/routines" element={<AdminRoutineList />} />
+            </>
+          )}
+
+        <Route path="/*" element={<NotFound/>}></Route>
       </Routes>
     </BrowserRouter>
   );
