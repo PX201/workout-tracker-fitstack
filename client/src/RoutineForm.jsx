@@ -45,11 +45,37 @@ function RoutineForm() {
       }).catch(console.log);
   }, []);
 
+  // delete routine
+  const handleDelete = (routineId) => {
+    const routine = routines.find(r => r.routineId === routineId);
+
+    // show confirmation popup first
+    if (window.confirm(`Delete ${routine.title}?`)) {
+
+      const init = {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem("me")}`
+        }
+      };
+      fetch(`${url}/routine/${routineId}`, init)
+        .then(response => {
+          if (response.status === 204) { // successful delete
+            const newRoutines = routines.filter(r => r.routineId !== routineId);
+            setRoutines(newRoutines);
+          } else { // failure to delete
+            return Promise.reject(`Unexpected Status Code: ${response.status}`);
+          }
+        }).catch(console.log);
+    }
+  }
+
   const handleSubmit = (event) => {
     // TODO: add routine with HTTP request
     event.preventDefault();
     navigate("/profile");
   };
+
 
   return (
     <>
@@ -74,7 +100,7 @@ function RoutineForm() {
                     <button className="btn btn-outline-warning me-2">
                       Edit
                     </button>
-                    <button className="btn btn-outline-danger">
+                    <button className="btn btn-outline-danger" onClick={() => {handleDelete(r.routineId)}}>
                       Delete
                     </button>
                   </div>
