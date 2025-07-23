@@ -73,14 +73,23 @@ function BodyHighlighter() {
     if (muscles.length === 0 || routines.length === 0) {
       return;
     }
+    console.log(logs);
 
     /*
     body structure: [ { name: <routine title>, muscles: [<muscle groups>] }, ...]
     */
     logs.forEach(l => {
+
+      // filter logs that are more than one month old
+      let today = new Date();
+      today.setMonth(today.getMonth() - 1);
+      if (today > Date.parse(l.date)) {
+        return;
+      }
+
       const r = routines.find(r => r.routineId === l.routineId);
-      newBody.push({ 
-        name: r.title, 
+      newBody.push({
+        name: r.title,
         muscles: r.muscles.map(m => {
           return m.toLowerCase().replace('_', '-'); // change strings like UPPER_BACK to upper-back
         })
@@ -92,7 +101,7 @@ function BodyHighlighter() {
   // TODO: replace click with hover?
   const handleClick = React.useCallback(({ muscle, data }) => {
     const { exercises, frequency } = data;
-    alert(`You've worked out your ${muscle} ${frequency} times through the following routines: ${exercises.slice(0,-1).map(e => { return `${e},`; })} ${exercises.slice(-1)}`);
+    alert(`You've worked out your ${muscle} ${frequency} times through the following routines: ${exercises.slice(0, -1).map(e => { return `${e},`; })} ${exercises.slice(-1)}`);
   }, [body]);
 
   return (
@@ -106,14 +115,37 @@ function BodyHighlighter() {
             data={body}
             style={{ margin: "auto", width: '25rem', padding: '5rem' }}
             onClick={handleClick}
-          />
+            highlightedColors={[
+              "#FFF9C4", // 1 - very faint yellow
+              "#FFF176", // 2 - soft yellow
+              "#FFD54F", // 3 - yellow-orange
+              "#FFB74D", // 4 - light orange
+              "#FF8A65", // 5 - orange/red mix
+              "#EF5350", // 6 - light red
+              "#E53935", // 7 - strong red
+              "#C62828", // 8 - darker red
+              "#B71C1C", // 9 - deep red
+              "#7F0000", // 10 - very dark red
+            ]} />
           <Model className="col-4"
             data={body}
             style={{ margin: "auto", width: '25rem', padding: '5rem' }}
             onClick={handleClick}
-            type="posterior"
-          />
-          <div className="col-2"></div>
+            highlightedColors={[
+              "#FFF9C4", // 1 - very faint yellow
+              "#FFF176", // 2 - soft yellow
+              "#FFD54F", // 3 - yellow-orange
+              "#FFB74D", // 4 - light orange
+              "#FF8A65", // 5 - orange/red mix
+              "#EF5350", // 6 - light red
+              "#E53935", // 7 - strong red
+              "#C62828", // 8 - darker red
+              "#B71C1C", // 9 - deep red
+              "#7F0000", // 10 - very dark red
+            ]}
+              type = "posterior"
+              />
+              <div className="col-2"></div>
         </div>
       </section>
     </>
