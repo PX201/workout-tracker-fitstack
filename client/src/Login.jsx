@@ -1,10 +1,49 @@
-import { Link, useParams } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 function Login() {
+  const [user, setUser] = useState({});
   const { username } = useParams();
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+  const url = "http://localhost:8080/api/auth/login";
 
-  const handleSubmit = () => {
-    // TODO: handle login
+  // update login credentials with form input
+  const handleChange = (event) => {
+    const newUser = { ...user };
+    newUser[event.target.id] = event.target.value;
+    setUser(newUser);
+  }
+
+  // login user on form submit
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const init = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user)
+    };
+    //console.log(user);
+    //console.log(init);
+    fetch(url, init)
+      .then(response => {
+        console.log("401");
+        if (response.status === 202 || response.status === 400) {
+          return response.json();
+        } else {
+          return Promise.reject(`Unexpected Status Error: ${response.status}`);
+        }
+      }).then(data => {
+        if (data.token) {
+          // TODO: store token somehow
+          navigate("/profile");
+        } else {
+          setErrors(data);
+        }
+      }).catch(console.log);
   }
 
   return (
@@ -13,33 +52,52 @@ function Login() {
         <div className="text-center mb-4">
           <h1 className="mb-4">Fitstack Workout Tracker</h1>
           {username && (
-          <div className="row d-flex justify-content-center">
-            <div className="alert alert-success mt-4 mb-4 col-4">
-               {username} registered successfully!
+            <div className="row d-flex justify-content-center">
+              <div className="alert alert-success mt-4 mb-4 col-4">
+                {username} registered successfully!
+              </div>
             </div>
-          </div>
           )}
           <h2>Login:</h2>
         </div>
+        {errors.messages && errors.messages.length !== 0 && (
+          <div className="row d-flex justify-content-center">
+            <div className="alert alert-danger mt-4 mb-4 col-4">
+              <ul>
+                {errors.messages.map(e => <li key={e}>{e}</li>)}
+              </ul>
+            </div>
+          </div>
+        )}
         <div className="row">
           <div className="col-4"></div>
           <form onSubmit={handleSubmit} className="col-4 border border-muted rounded p-4">
             <fieldset className="mb-4">
               <label htmlFor="email">Email address</label>
-              <input type="email" className="form-control" id="email" />
+              <input
+                type="email"
+                className="form-control"
+                name="email"
+                id="email"
+                onChange={handleChange}
+              />
             </fieldset>
             <fieldset className="mb-4">
               <label htmlFor="password">Password</label>
-              <input type="password" className="form-control" id="password" />
+              <input
+                type="password"
+                className="form-control"
+                name="password"
+                id="password"
+                onChange={handleChange}
+              />
             </fieldset>
             <div className="d-flex justify-content-between">
-              <Link
-                type="button"
+              <button
                 className="btn btn-dark"
-                to={"/profile"}
               >
                 Login
-              </Link>
+              </button>
               <Link
                 type="button"
                 className="btn btn-link d-flex"
