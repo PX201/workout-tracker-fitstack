@@ -6,15 +6,30 @@ import UserNavbar from "./UserNavbar";
 function LogForm() {
   const [routines, setRoutines] = useState([]);
   const navigate = useNavigate();
+  const url = "http://localhost:8080/api/user"
 
   useEffect(() => {
-    // TODO: replace with HTTP request to get routines
-    setRoutines([
-      { routine_id: 1, title: "routine 1" },
-      { routine_id: 2, title: "routine 2" },
-      { routine_id: 3, title: "routine 3" },
-    ]);
+    // HTTP request to get routines
+    const init = {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
+      }
+    }
+    fetch(`${url}/me/routine`, init)
+      .then(response => {
+        if (response.status === 200 || response.status === 403) {
+          return response.json();
+        } else {
+          return Promise.reject(`Unexpected Status Code: ${response.status}`);
+        }
+      }).then(data => {
+        console.log(data);
+        console.log(sessionStorage.getItem("me"));
+        setRoutines(data);
+      }).catch(console.log);
   }, []);
+
 
   const handleSubmit = (event) => {
     // TODO: add log with HTTP request
@@ -37,7 +52,7 @@ function LogForm() {
               <select className="form-control" id="routine">
                 {routines.map(r => {
                   return (
-                    <option key={r.routine_id}>
+                    <option key={r.routineId}>
                       {r.title}
                     </option>);
                 })}
