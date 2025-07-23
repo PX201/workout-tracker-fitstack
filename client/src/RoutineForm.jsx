@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import UserNavbar from "./UserNavbar";
-import { useFormContext } from "react-hook-form";
 
 const DEFAULT_ROUTINE = {
   title: "",
-  muscles: []
+  muscles: [...[]]
 }
 
 function RoutineForm() {
@@ -14,6 +13,7 @@ function RoutineForm() {
   const [editRoutineId, setEditRoutineId] = useState(0);
   const [muscles, setMuscles] = useState([]);
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
   const url = "http://localhost:8080/api/user"
   const muscleUrl = "http://localhost:8080/api/muscles";
 
@@ -92,6 +92,7 @@ function RoutineForm() {
   // update form on form change
   const handleChange = (event) => {
     const newRoutine = { ...routine };
+    newRoutine.muscles = [ ... routine.muscles ];
 
     // special handling for checkboxes, add/remove muscles from array
     if (event.target.type === "checkbox") {
@@ -181,11 +182,25 @@ function RoutineForm() {
           fetchRoutines(); // fetch updated routine list
           setRoutine(DEFAULT_ROUTINE); // reset form
           setErrors([]); // reset errors
+          setEditRoutineId(0); // go back to add routine form
         } else if (data.messages) {
           setErrors(data);
         }
       })
-      .catch(console.log);  }
+      .catch(console.log);
+    }
+
+  const cancelAddOrEdit = () => {
+    if (editRoutineId > 0) {
+      // reset form when cancelling edit
+      setRoutine(DEFAULT_ROUTINE);
+      setEditRoutineId(0);
+      setErrors([]);
+    } else {
+      // exit page when cancelling add
+      navigate("/profile");
+    }
+  }
 
   return (
     <>
@@ -221,7 +236,7 @@ function RoutineForm() {
 
           <div className="col-4">
             <div className="text-center mb-4">
-              <h2>Add Routine</h2>
+              <h2>{editRoutineId > 0 ? "Edit Routine" : "Add Routine"}</h2>
             </div>
             {errors.messages && errors.messages.length !== 0 && (
               <div className="row d-flex justify-content-center">
@@ -249,15 +264,15 @@ function RoutineForm() {
                 type="submit"
                 className="btn btn-outline-success me-2"
               >
-                Add Routine
+                {editRoutineId > 0 ? "Update Routine" : "Add Routine"}
               </button>
-              <Link
+              <button
                 type="button"
                 className="btn btn-outline-danger"
-                to={"/profile"}
+                onClick={cancelAddOrEdit}
               >
-                Cancel
-              </Link>
+                {editRoutineId > 0 ? "Cancel Edit" : "Cancel"}
+              </button>
             </form>
           </div>
 
