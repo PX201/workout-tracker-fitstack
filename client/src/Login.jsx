@@ -34,9 +34,12 @@ function Login() {
           return Promise.reject(`Unexpected Status Error: ${response.status}`);
         }
       }).then(data => {
-        if (data.token) {
-          // on successful login, put token in session storage
+        if (data.token && data.user) {
+          // on successful login, put token and user info in session storage
           sessionStorage.setItem("me", data.token);
+          sessionStorage.setItem("user_username", data.user.username);
+          sessionStorage.setItem("user_email", data.user.email);
+          sessionStorage.setItem("user_role", data.user.role);
           if (data.user.role === 'USER') {
             navigate("/profile");
           } else {
