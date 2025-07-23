@@ -1,44 +1,104 @@
 @base_url = http://localhost:8080/api
-@access_token = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInVzZXJJZCI6Niwic3ViIjoiaGFtaW5AZW1haWwuY29tIiwiaWF0IjoxNzUzMjIwODY1LCJleHAiOjE3NTMyMjI2NjV9.bmgE55qYgotx1sOG9zMBc2n1CefwyzOU1jwmggIgtVI
 
-// REGISTER A USER 
+### ===========================
+### AUTHENTICATION
+### ===========================
+
+# Register a new user
 POST {{base_url}}/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "username": "hamid",
-  "email": "hamin@email.com",
+  "username": "aiman3",
+  "email": "aiman3@email.com",
   "password": "hash123456"
 }
 
 ###
 
-// LOGIN 
+# Login (Regular User)
 POST {{base_url}}/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "hamin@email.com",
+  "email": "aiman@email.com",
   "password": "hash123456"
 }
+
+@access_token = {{access_token_here}}
+
 ###
 
-// Get User info
-GET {{base_url}}/user/me HTTP/1.1
+# Login (Default Admin)
+POST {{base_url}}/auth/login HTTP/1.1
 Content-Type: application/json
+
+{
+  "email": "admin@email.com",
+  "password": "admin12345"
+}
+
+@admin_access_token = {{admin_token_here}}
+
+
+### ===========================
+### USER ENDPOINTS
+### ===========================
+
+# Get current user info
+GET {{base_url}}/user/me HTTP/1.1
 Authorization: Bearer {{access_token}}
 
- 
 ###
 
-// Update User Info
-Put {{base_url}}/user/me HTTP/1.1
+# Update basic user info (email, username)
+PUT {{base_url}}/user/me HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-    "email": "updatedemani@gmail.com",
-    "username": "updatedUsername"
-
+  "userId": 6,
+  "email": "updatedemani@gmail.com",
+  "username": "updatedUsername"
 }
+
+###
+
+# Change user password
+PUT {{base_url}}/user/me/changepassword HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "currentPassword": "hash123456",
+  "newPassword": "password1234"
+}
+
+
+### ===========================
+### ADMIN ENDPOINTS
+### ===========================
+
+# Get all users
+GET {{base_url}}/admin/users HTTP/1.1
+Authorization: Bearer {{admin_access_token}}
+
+###
+
+# Activate/Deactivate user
+PUT {{base_url}}/admin/users/2/true HTTP/1.1
+Authorization: Bearer {{admin_access_token}}
+
+###
+
+# Promote user to admin
+PUT {{base_url}}/admin/users/2 HTTP/1.1
+Authorization: Bearer {{admin_access_token}}
+
+###
+
+# Delete a user
+DELETE {{base_url}}/admin/users/3 HTTP/1.1
+Authorization: Bearer {{admin_access_token}}
+
 
