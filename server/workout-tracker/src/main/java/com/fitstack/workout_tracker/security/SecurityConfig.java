@@ -29,16 +29,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                         // User-accessible routes (GET, POST, PUT, DELETE)
-                        .requestMatchers("/api/user/**").hasRole(Role.USER.name())
+                        .requestMatchers("/api/user/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
 
                         // Admin-only routes
                         .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
 
                         .anyRequest().authenticated()
-                )
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint((req, res, ex1) ->
-                                res.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex1.getMessage()))
                 )
                 .sessionManagement(sess ->
                         sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
