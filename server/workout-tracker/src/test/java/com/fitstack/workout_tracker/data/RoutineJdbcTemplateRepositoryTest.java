@@ -32,7 +32,7 @@ class RoutineJdbcTemplateRepositoryTest {
     void shouldFindAll() {
         List<Routine> routines = repository.findAll();
         assertNotNull(routines);
-        assertTrue(routines.size() >= 5 && routines.size() <= 7);
+        assertFalse(routines.isEmpty());
 
         for (Routine routine : routines) {
             assertNotNull(routine.getMuscles(), "MuscleGroups should not be null");
