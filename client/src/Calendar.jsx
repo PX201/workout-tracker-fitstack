@@ -5,22 +5,49 @@ import UserNavbar from './UserNavbar';
 
 function Calendar() {
   const [dates, setDates] = useState([]);
+  const [errors, setErrors] = useState([]);
+  const url = "http://localhost:8080/api/user";
 
   useEffect(() => {
-    // TODO: replace with HTTP call
-    setDates([
-      { date: '2025-05-01', count: 2 },
-      { date: '2025-05-22', count: 3 },
-      { date: '2025-05-30', count: 2 },
-      { date: '2025-07-01', count: 1 },
-      // ...and so on
-    ])
+    const init = { 
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${sessionStorage.getItem("me")}`
+    }
+    };
+
+    fetch(`${url}/log/me`, init)
+    .then(response => {
+      if (response.status === 200) {
+        return response.json();
+      } else {
+        return Promise.reject(`Error fetching logs: ${response.status}`);
+      }
+    })
+    .then(data => {
+      const countsByDate = data.reduce((acc, log) => {
+        const date = log.date;
+        acc[date] = (acc[date] || 0) + 1;
+        return acc;
+      }, {});
+
+      const dateCountsArray = Object.entries(countsByDate).map(([date, count]) => ({
+        date,
+        count
+      }));
+      console.log(dateCountsArray);
+      setDates(dateCountsArray);
+    })
+    .catch(err => {
+      console.error(err);
+      setErrors(["Could not fetch logs."]);
+    });
   }, []);
 
   // set start date of calendar
   const getStartDate = () => {
     let date = new Date();;
-    date.setDate(date.getDate() - 90);
+    date.setDate(date.getDate() - 365);
     return date;
   }
 
@@ -39,7 +66,7 @@ function Calendar() {
           <CalendarHeatmap
             startDate={getStartDate()}
             endDate={Date.now()}
-            showWeekdayLabels={true}
+            showWeekdayLabels={false}
             values={dates}
           />
         </div>
