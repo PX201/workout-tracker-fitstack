@@ -11,11 +11,11 @@ const DEFAULT_ROUTINE = {
 function RoutineForm() {
   const [routines, setRoutines] = useState([]);
   const [routine, setRoutine] = useState(DEFAULT_ROUTINE);
+  const [editRoutineId, setEditRoutineId] = useState(0);
   const [muscles, setMuscles] = useState([]);
   const [errors, setErrors] = useState({});
   const url = "http://localhost:8080/api/user"
   const muscleUrl = "http://localhost:8080/api/muscles";
-  let editRoutineId = 0;
 
   // initial page load
   useEffect(() => {
@@ -111,12 +111,23 @@ function RoutineForm() {
   const fillFormEdit = (routineId) => {
     const editRoutine = routines.find(r => r.routineId === routineId);
     setRoutine(editRoutine);
+    setEditRoutineId(routineId);
   }
 
-  // add routine on form submit
+  // add or edit routine on form submit
   const handleSubmit = (event) => {
     event.preventDefault();
 
+    if (editRoutineId) {
+      // update
+      editRoutine();
+    } else {
+      // add
+      addRoutine();
+    }
+  };
+
+  const addRoutine = () => {
     // HTTP request to add routine
     const init = {
       method: "POST",
@@ -136,13 +147,45 @@ function RoutineForm() {
       }).then(data => {
         if (data.title) {
           fetchRoutines(); // fetch updated routine list
-          setErrors([]); // reset errors on success
-        } else {
+          setRoutine(DEFAULT_ROUTINE); // reset form
+          setErrors([]); // reset errors
+        } else if (data.messages) {
           setErrors(data);
         }
       });
-  };
+  }
 
+  const editRoutine = () => {
+    // HTTP request to edit routine
+    const init = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("me")}`,
+      },
+      body: JSON.stringify(routine),
+    };
+    fetch(`${url}/me/routine/${editRoutineId}`, init)
+      .then((response) => {
+        if (response.status === 204) {
+          // successful update returns nothing
+          return null;
+        } else if (response.status === 401 || response.status === 403 || response.status === 404) {
+          return response.json();
+        } else {
+          return Promise.reject(`Unexpected Status Error: ${response.status}`);
+        }
+      })
+      .then((data) => {
+        if (!data) {
+          fetchRoutines(); // fetch updated routine list
+          setRoutine(DEFAULT_ROUTINE); // reset form
+          setErrors([]); // reset errors
+        } else if (data.messages) {
+          setErrors(data);
+        }
+      })
+      .catch(console.log);  }
 
   return (
     <>
@@ -164,7 +207,7 @@ function RoutineForm() {
                       {r.muscles.slice(0, -1).map(m => { return <span key={m}>&nbsp;{m.toLowerCase().replace("_", " ")},</span> })}
                       &nbsp;{r.muscles.length > 0 && (r.muscles[r.muscles.length - 1].toLowerCase().replace("_", " "))}
                     </p>
-                    <button className="btn btn-outline-warning me-2" onClick={() => {fillFormEdit(r.routineId)}}>
+                    <button className="btn btn-outline-warning me-2" onClick={() => { fillFormEdit(r.routineId) }}>
                       Edit
                     </button>
                     <button className="btn btn-outline-danger" onClick={() => { handleDelete(r.routineId) }}>
