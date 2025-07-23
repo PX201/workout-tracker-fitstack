@@ -2,9 +2,14 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UserNavbar from "./UserNavbar";
 
+const DEFAULT_ROUTINE = {
+  title: "",
+  muscles: []
+}
 
 function RoutineForm() {
   const [routines, setRoutines] = useState([]);
+  const [routine, setRoutine] = useState(DEFAULT_ROUTINE);
   const [muscles, setMuscles] = useState([]);
   const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
@@ -47,10 +52,10 @@ function RoutineForm() {
 
   // delete routine
   const handleDelete = (routineId) => {
-    const routine = routines.find(r => r.routineId === routineId);
+    const routineToDelete = routines.find(r => r.routineId === routineId);
 
     // show confirmation popup first
-    if (window.confirm(`Delete ${routine.title}?`)) {
+    if (window.confirm(`Delete ${routineToDelete.title}?`)) {
 
       const init = {
         method: "DELETE",
@@ -68,6 +73,25 @@ function RoutineForm() {
           }
         }).catch(console.log);
     }
+  }
+
+   // update form on form change
+  const handleChange = (event) => {
+    const newRoutine = { ...routine };
+
+    // special handling for checkboxes, add/remove muscles from array
+    if (event.target.type === "checkbox") {
+      console.log(event.target.checked);
+      if (event.target.checked) {
+        newRoutine.muscles.push(event.target.name);
+      } else {
+        newRoutine.muscles = newRoutine.muscles.filter(m => m !== event.target.name);
+      }
+
+    } else {
+      newRoutine[event.target.name] = event.target.value;
+    }
+    setRoutine(newRoutine);
   }
 
   const handleSubmit = (event) => {
@@ -116,13 +140,13 @@ function RoutineForm() {
             <form onSubmit={handleSubmit} className="border border-muted rounded p-4">
               <fieldset className="mb-4">
                 <label htmlFor="title">Title</label>
-                <input type="text" className="form-control" id="title" />
+                <input type="text" className="form-control" id="title" name="title" onChange={handleChange}/>
               </fieldset>
               {muscles.map(m => {
                 return (
                   <fieldset key={m}>
                     <label htmlFor={m}>{m.toLowerCase().replace("_", " ")}</label>
-                    <input type="checkbox" className="form-check-input" value="" id={m} />
+                    <input type="checkbox" className="form-check-input" value="" id={m} name={m} onChange={handleChange}/>
                   </fieldset>
                 );
               })}
