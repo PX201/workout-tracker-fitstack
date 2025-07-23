@@ -1,27 +1,17 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-const DEFAULT_USER = {
-  userId: 0,
-  username: "<username>",
-  email: "<email>",
-  password: "",
-  role: "USER",
-  dateJoined: Date.now(),
-  active: true
-};
+import { DEFAULT_USER, userUrl, userToken } from "./components/userInfo.js" 
 
 function UserNavbar() {
   const [user, setUser] = useState(DEFAULT_USER);
   const navigate = useNavigate();
-  const userUrl = "http://localhost:8080/api/user/me";
 
   useEffect(() => {
     // fetch user info
     const init = { 
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
+        "Authorization": `Bearer ${userToken}`
       }
     };
     fetch(userUrl, init)
@@ -36,6 +26,7 @@ function UserNavbar() {
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
+      // remove user token
       sessionStorage.removeItem("me");
       navigate("/");
     }

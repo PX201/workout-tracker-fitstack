@@ -1,27 +1,17 @@
 import { useEffect, useState } from "react";
 import UserNavbar from "./UserNavbar";
-
-const DEFAULT_USER = {
-  userId: 0,
-  username: "<username>",
-  email: "<email>",
-  password: "",
-  role: "USER",
-  dateJoined: Date.now(),
-  active: true
-};
+import { DEFAULT_USER, userUrl, userToken } from "./components/userInfo.js" 
 
 function Profile() {
   const [user, setUser] = useState(DEFAULT_USER);
   const [logs, setLogs] = useState([]);
-  const userUrl = "http://localhost:8080/api/user/me";
 
   useEffect(() => {
     // fetch user info
     const init = { 
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
+        "Authorization": `Bearer ${userToken}`
       }
     };
     fetch(userUrl, init)
