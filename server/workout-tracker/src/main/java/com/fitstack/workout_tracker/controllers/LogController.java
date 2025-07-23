@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/log")
+@RequestMapping("api")
 @CrossOrigin
 public class LogController {
 
@@ -26,7 +26,7 @@ public class LogController {
     private final RoutineService routineService;
 
     // USER
-    @GetMapping("/user/routine/{routineId}")
+    @GetMapping("/user/log/routine/{routineId}")
     public ResponseEntity<?> findByRoutineId(@PathVariable int routineId, Authentication auth) {
         Long currentUserId = AuthUtil.getUserId(auth);
         if (currentUserId == null) {
@@ -43,7 +43,7 @@ public class LogController {
         return ResponseEntity.ok(logs);
     }
 
-    @GetMapping("/user/me")
+    @GetMapping("/user/log/me")
     public ResponseEntity<?> findMyLogs(Authentication auth) {
         Long currentUserId = AuthUtil.getUserId(auth);
         if (currentUserId == null) {
@@ -53,7 +53,7 @@ public class LogController {
         return ResponseEntity.ok(logs);
     }
 
-    @PostMapping("/user")
+    @PostMapping("/user/log")
     public ResponseEntity<Object> add(@RequestBody Log log, Authentication auth) {
         Long currentUserId = AuthUtil.getUserId(auth);
         if (currentUserId == null) {
@@ -74,7 +74,7 @@ public class LogController {
         return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
     }
 
-    @PutMapping("/user/{logId}")
+    @PutMapping("/user/log/{logId}")
     public ResponseEntity<Object> update(@PathVariable int logId, @RequestBody Log log, Authentication auth) {
         // simple mismatch check
         if (logId != log.getLogId()) {
@@ -113,7 +113,7 @@ public class LogController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/user/{logId}")
+    @DeleteMapping("/user/log/{logId}")
     public ResponseEntity<Void> deleteById(@PathVariable int logId, Authentication auth) {
         // find user sending request
         User user = AuthUtil.getUser(auth);
@@ -141,7 +141,7 @@ public class LogController {
     }
 
     // ADMIN
-    @GetMapping("/admin")
+    @GetMapping("/admin/log")
     public ResponseEntity<?> findAll(Authentication auth) {
         User user = AuthUtil.getUser(auth);
         if (user == null || !user.hasRole(Role.ADMIN)) {

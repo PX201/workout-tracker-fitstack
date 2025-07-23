@@ -1,28 +1,27 @@
-@base_url = http://localhost:8080/api/log
-@jwt_token = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInVzZXJJZCI6Miwic3ViIjoiZHRlc3RlckBlbWFpbC5jb20iLCJpYXQiOjE3NTMyNDQ4MTEsImV4cCI6MTc1MzI0NjYxMX0.BvcrtCvee-DSODyC_38BL_ureAgW68q_4FK19OHWcAc
-@jwt_admin = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImRvdWdAZ21haWwuY29tIiwiaWF0IjoxNzUzMjQ0ODI4LCJleHAiOjE3NTMyNDY2Mjh9.J2v6J0KLEphQCPgCT_DxlEREOQbfFqCWYjLTaoFiqmM
-GET {{base_url}}/user/me
-Authorization: Bearer {{jwt_token}}
+@base_url = http://localhost:8080/api
+@jwt_token = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInVzZXJJZCI6Miwic3ViIjoiZHRlc3RlckBlbWFpbC5jb20iLCJpYXQiOjE3NTMyNTA1MDksImV4cCI6MTc1MzI1MjMwOX0.5gDYYzmWrol2fgOl4iKaKSi_yKz4JV5aDi_dy0DR6iI
+@jwt_admin = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImRvdWdAZ21haWwuY29tIiwiaWF0IjoxNzUzMjUwNTI5LCJleHAiOjE3NTMyNTIzMjl9.oTfnIpZvwv2JUtMSaNOEK0j3Ly9PzBzS8WnFFjGkaQk
 
+###
 ### Get my (logged in user) logs
-GET {{base_url}}/user/me
+GET {{base_url}}/user/log/me
 Authorization: Bearer {{jwt_token}}
 
 ### Get logs for a specific routine (must belong to user)
-GET {{base_url}}/user/routine/3
+GET {{base_url}}/user/log/routine/3
 Authorization: Bearer {{jwt_admin}}
 
 ###
 
 ### Add a new log
-POST {{base_url}}/user
-Authorization: Bearer {{jwt_admin}}
+POST {{base_url}}/user/log
+Authorization: Bearer {{jwt_token}}
 Content-Type: application/json
 
 {
-  "routineId": 33,
+  "routineId": 7,
   "date": "2025-07-22",
-  "notes": "fun fun",
+  "notes": "snake",
   "duration": 50,
   "intensity": 8
 }
@@ -30,28 +29,28 @@ Content-Type: application/json
 ###
 
 ### Update a log
-PUT {{base_url}}/user/6
+PUT {{base_url}}/user/log/11
 Authorization: Bearer {{jwt_admin}}
 Content-Type: application/json
 
 {
-  "logId": 6,
+  "logId": 11,
   "routineId": 1,
   "date": "2025-07-23",
-  "notes": "if i see this ill be sad",
-  "duration": 50,
+  "notes": "mississippi",
+  "duration": 55,
   "intensity": 3
 }
 
 ###
 
 ### Delete a log
-DELETE {{base_url}}/user/7
-Authorization: Bearer {{jwt_admin}}
+DELETE {{base_url}}/user/log/10
+Authorization: Bearer {{jwt_token}}
 
 ###
 
 ### ADMIN: Get all logs
-GET {{base_url}}/admin
+GET {{base_url}}/admin/log
 Authorization: Bearer {{jwt_admin}}
 
