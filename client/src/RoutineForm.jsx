@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import UserNavbar from "./UserNavbar";
 
 const DEFAULT_ROUTINE = {
@@ -11,11 +11,11 @@ function RoutineForm() {
   const [routines, setRoutines] = useState([]);
   const [routine, setRoutine] = useState(DEFAULT_ROUTINE);
   const [muscles, setMuscles] = useState([]);
-  const [errors, setErrors] = useState([]);
-  const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
   const url = "http://localhost:8080/api/user"
   const muscleUrl = "http://localhost:8080/api/muscles";
 
+  // initial page load
   useEffect(() => {
     // HTTP request to get muscles
     const init = {
@@ -75,13 +75,12 @@ function RoutineForm() {
     }
   }
 
-   // update form on form change
+  // update form on form change
   const handleChange = (event) => {
     const newRoutine = { ...routine };
 
     // special handling for checkboxes, add/remove muscles from array
     if (event.target.type === "checkbox") {
-      console.log(event.target.checked);
       if (event.target.checked) {
         newRoutine.muscles.push(event.target.name);
       } else {
@@ -94,10 +93,35 @@ function RoutineForm() {
     setRoutine(newRoutine);
   }
 
+  // add routine on form submit
   const handleSubmit = (event) => {
-    // TODO: add routine with HTTP request
     event.preventDefault();
-    navigate("/profile");
+
+    // HTTP request to add routine
+    const init = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
+      },
+      body: JSON.stringify(routine)
+    };
+    fetch(`${url}/me/routine`, init)
+      .then(response => {
+        if (response.status === 201 || response.status === 400 || response.status === 401) {
+          return response.json();
+        } else {
+          return Promise.reject(`Unexpected Status Code: ${response.status}`);
+        }
+      }).then(data => {
+        if (data.title) { // add routine to our routine list
+          const newRoutines = [ ...routines ];
+          newRoutines.push(routine);
+          setRoutines(newRoutines);
+        } else {
+          setErrors(data);
+        }
+      });
   };
 
 
@@ -118,13 +142,13 @@ function RoutineForm() {
                   <div key={r.routineId} className="border border-muted rounded mb-2 p-2">
                     <h4>{r.title}</h4>
                     <p>Muscle Groups:
-                      {r.muscles.slice(0, -1).map(m => { return <span key={m}>&nbsp;{m.toLowerCase()},</span> })}
-                      &nbsp;{r.muscles.length > 0 && (r.muscles.slice(-1)[0].toLowerCase())}
+                      {r.muscles.slice(0, -1).map(m => { return <span key={m}>&nbsp;{m.toLowerCase().replace("_", " ")},</span> })}
+                      &nbsp;{r.muscles.length > 0 && (r.muscles[r.muscles.length-1].toLowerCase().replace("_", " "))}
                     </p>
                     <button className="btn btn-outline-warning me-2">
                       Edit
                     </button>
-                    <button className="btn btn-outline-danger" onClick={() => {handleDelete(r.routineId)}}>
+                    <button className="btn btn-outline-danger" onClick={() => { handleDelete(r.routineId) }}>
                       Delete
                     </button>
                   </div>
@@ -137,16 +161,25 @@ function RoutineForm() {
             <div className="text-center mb-4">
               <h2>Add Routine</h2>
             </div>
+            {errors.messages && errors.messages.length !== 0 && (
+              <div className="row d-flex justify-content-center">
+                <div className="alert alert-danger mt-4 mb-4">
+                  <ul>
+                    {errors.messages.map(e => <li key={e}>{e}</li>)}
+                  </ul>
+                </div>
+              </div>
+            )}
             <form onSubmit={handleSubmit} className="border border-muted rounded p-4">
               <fieldset className="mb-4">
                 <label htmlFor="title">Title</label>
-                <input type="text" className="form-control" id="title" name="title" onChange={handleChange}/>
+                <input type="text" className="form-control" id="title" name="title" onChange={handleChange} />
               </fieldset>
               {muscles.map(m => {
                 return (
                   <fieldset key={m}>
                     <label htmlFor={m}>{m.toLowerCase().replace("_", " ")}</label>
-                    <input type="checkbox" className="form-check-input" value="" id={m} name={m} onChange={handleChange}/>
+                    <input type="checkbox" className="form-check-input" value="" id={m} name={m} onChange={handleChange} />
                   </fieldset>
                 );
               })}
