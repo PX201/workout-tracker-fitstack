@@ -94,6 +94,7 @@ function handleDelete(logId) {
                     <Link
                       className="btn btn-outline-warning btn-sm me-2"
                       to={`/log/edit/${log.logId}`}
+                      state={{ log }}
                     >
                       Edit
                     </Link>

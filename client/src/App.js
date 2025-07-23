@@ -9,6 +9,7 @@ import BodyHighlighter from "./BodyHighlighter";
 import Calendar from "./Calendar";
 import AdminUserList from "./AdminUserList";
 import AdminRoutineList from "./AdminRoutineList";
+import EditLogForm from "./EditLogForm";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/registration" element={<Registration/>}></Route>
         <Route path="/profile" element={<Profile/>}></Route>
         <Route path="/log/add" element={<LogForm/>}></Route>
+        <Route path="/log/edit/:logId" element={<EditLogForm />} />
         <Route path="/routine/add" element={<RoutineForm/>}></Route>
         <Route path="/edit" element={<UserForm/>}></Route>
         <Route path="/body" element={<BodyHighlighter />}></Route>
