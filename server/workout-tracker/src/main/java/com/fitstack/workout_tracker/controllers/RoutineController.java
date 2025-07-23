@@ -36,11 +36,8 @@ public class RoutineController {
         return ResponseEntity.ok(routines);
     }
 
-    //@GetMapping("/user/{userId}/routine/{routineId}")
-    //public Routine findByRoutineIdUser(@PathVariable long routineId) { return routineService.findById(routineId); }
-
     @PostMapping("/user/me/routine")
-    public ResponseEntity<?> addRoutineUser(@RequestBody Routine routine, Authentication auth) {
+    public ResponseEntity<?> addRoutine(@RequestBody Routine routine, Authentication auth) {
         Long userId = AuthUtil.getUserId(auth);
         if (userId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -54,7 +51,7 @@ public class RoutineController {
     }
 
     @PutMapping("/user/me/routine/{routineId}")
-    public ResponseEntity<Object> updateRoutineUser(@PathVariable long routineId, @RequestBody Routine routine, Authentication auth) {
+    public ResponseEntity<Object> updateRoutine(@PathVariable long routineId, @RequestBody Routine routine, Authentication auth) {
         User currentUser = AuthUtil.getUser(auth);
         if (currentUser == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -80,7 +77,7 @@ public class RoutineController {
     }
 
     @DeleteMapping("/user/routine/{routineId}")
-    public ResponseEntity<Void> deleteByIdUser(@PathVariable long routineId, Authentication auth) {
+    public ResponseEntity<Void> deleteById(@PathVariable long routineId, Authentication auth) {
         User currentUser = AuthUtil.getUser(auth);
         if (currentUser == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

@@ -1,117 +1,38 @@
-@user_url = http://localhost:8080/api/user/
-@admin_url = http://localhost:8080/api/admin/
+@user_url = http://localhost:8080/api/user
+@admin_url = http://localhost:8080/api/admin
 
-// USER OPERATIONS
+@jwt_token = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInVzZXJJZCI6Miwic3ViIjoiZHRlc3RlckBlbWFpbC5jb20iLCJpYXQiOjE3NTMyNDA1NDksImV4cCI6MTc1MzI0MjM0OX0.U8P-BG0hjv_yJKeKoe5Tx9ubA_IKEysj1cY0uhz6tdc
 
-// findByUserIdUser
-GET {{user_url}}1/routine
 
-// addRoutineUser
-###
-POST {{user_url}}routine
+### Get my routines
+GET {{user_url}}/me/routine
+Authorization: Bearer {{jwt_token}}
+
+### Add a new routine
+POST {{user_url}}/me/routine
+Authorization: Bearer {{jwt_token}}
 Content-Type: application/json
 
 {
-  "title": "Routine 1",
-  "userId": 1,
-  "muscles": [
-    "TRAPEZIUS",
-    "UPPER_BACK",
-    "LOWER_BACK"
-  ]
+  "title": "Morning Workout",
+  "muscles": ["LOWER_BACK", "UPPER_BACK"]
 }
 
-// addRoutineUser unhappy path
-###
-POST {{user_url}}routine
-Content-Type: application/json
-
-{
-  "muscles": [
-  ]
-}
-
-// updateRoutineUser
-###
-PUT {{user_url}}routine/1
+### Update a routine by ID
+PUT {{user_url}}/me/routine/1
+Authorization: Bearer {{jwt_token}}
 Content-Type: application/json
 
 {
   "routineId": 1,
-  "title": "Routine 2",
-  "userId": 1,
-  "muscles": [
-    "TRAPEZIUS",
-    "UPPER_BACK",
-    "LOWER_BACK",
-    "NECK"
-  ]
+  "title": "Updated Routine Name",
+  "muscles": ["FOREARM"]
 }
 
-// updateRoutineUser unhappy path
-###
-PUT {{user_url}}routine/99
-Content-Type: application/json
+### Delete a routine by ID
+DELETE {{user_url}}/routine/4
+Authorization: Bearer {{jwt_token}}
 
-{
-  "routineId": 99,
-  "title": "Routine 2",
-  "userId": 1,
-  "muscles": [
-    "TRAPEZIUS",
-    "UPPER_BACK",
-    "LOWER_BACK",
-    "NECK"
-  ]
-}
-
-// deleteRoutineUser
-###
-DELETE {{user_url}}routine/1
-
-
-
-// ADMIN OPERATIONS
-
-// findall
-###
-GET {{admin_url}}routin
-
-
-// updateRoutineAdmin
-###
-PUT {{admin_url}}routine/1
-Content-Type: application/json
-
-{
-  "routineId": 1,
-  "title": "Routine 2",
-  "userId": 1,
-  "muscles": [
-    "TRAPEZIUS",
-    "UPPER_BACK",
-    "LOWER_BACK",
-    "NECK"
-  ]
-}
-
-// updateRoutineAdmin unhappy path
-###
-PUT {{admin_url}}routine/99
-Content-Type: application/json
-
-{
-  "routineId": 99,
-  "title": "Routine 2",
-  "userId": 1,
-  "muscles": [
-    "TRAPEZIUS",
-    "UPPER_BACK",
-    "LOWER_BACK",
-    "NECK"
-  ]
-}
-
-// deleteRoutineAdmin
-###
-DELETE {{admin_url}}routine/1
+### Admin: Get all routines
+GET {{admin_url}}/routine
+Authorization: Bearer {{jwt_token}}

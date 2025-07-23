@@ -22,34 +22,32 @@ import java.util.List;
 @CrossOrigin
 public class LogController {
 
-    LogService service;
-    RoutineService routineService;
+    private final LogService service;
+    private final RoutineService routineService;
 
     // USER
-    // less likely to use
     @GetMapping("/user/routine/{routineId}")
     public ResponseEntity<?> findByRoutineId(@PathVariable int routineId, Authentication auth) {
         Long currentUserId = AuthUtil.getUserId(auth);
         if (currentUserId == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Null user. Unauthorized.", HttpStatus.UNAUTHORIZED);
         }
         Routine routine = routineService.findById(routineId);
         if (routine == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("No logs found for that routine.", HttpStatus.NOT_FOUND);
         }
         if (routine.getUserId() != currentUserId) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Forbidden. That is not your own routine ID.", HttpStatus.FORBIDDEN);
         }
         List<Log> logs = service.findByRoutineId(routineId);
         return ResponseEntity.ok(logs);
     }
 
-
     @GetMapping("/user/me")
     public ResponseEntity<?> findMyLogs(Authentication auth) {
         Long currentUserId = AuthUtil.getUserId(auth);
         if (currentUserId == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Null user. Unauthorized.", HttpStatus.UNAUTHORIZED);
         }
         List<Log> logs = service.findByUserId(currentUserId);
         return ResponseEntity.ok(logs);
@@ -59,14 +57,14 @@ public class LogController {
     public ResponseEntity<Object> add(@RequestBody Log log, Authentication auth) {
         Long currentUserId = AuthUtil.getUserId(auth);
         if (currentUserId == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Null user. Unauthorized.", HttpStatus.UNAUTHORIZED);
         }
         Routine routine = routineService.findById(log.getRoutineId());
         if (routine == null) {
             return new ResponseEntity<>("Routine not found", HttpStatus.NOT_FOUND);
         }
         if (routine.getUserId() != currentUserId) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("You can only add logs for your own routines.", HttpStatus.FORBIDDEN);
         }
 
         Result<Log> result = service.addLog(log);
@@ -76,29 +74,35 @@ public class LogController {
         return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
     }
 
-
     @PutMapping("/user/{logId}")
     public ResponseEntity<Object> update(@PathVariable int logId, @RequestBody Log log, Authentication auth) {
         // simple mismatch check
         if (logId != log.getLogId()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Mismatch", HttpStatus.CONFLICT);
         }
         // find user who sent request
         User user = AuthUtil.getUser(auth);
         if (user == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Null user", HttpStatus.UNAUTHORIZED);
         }
         // find log they want to update, will need to find its routine and who created it
         Log existingLog = service.findByLogId(logId);
         if (existingLog == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Log not found.", HttpStatus.NOT_FOUND);
         }
         // if they're just a user, they can't edit others' logs. So find the routine
         // the log is based on, and make sure they made that routine
         if (!user.hasRole(Role.ADMIN)) {
-            Routine routine = routineService.findById(existingLog.getRoutineId());
-            if (routine == null || routine.getUserId() != user.getUserId()) {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            // existing log routine must be theirs
+            Routine currentRoutine = routineService.findById(existingLog.getRoutineId());
+            if (currentRoutine == null || currentRoutine.getUserId() != user.getUserId()) {
+                return new ResponseEntity<>("Routine is not yours, or null.", HttpStatus.FORBIDDEN);
+            }
+
+            // new routine assignment must also be theirs
+            Routine newRoutine = routineService.findById(log.getRoutineId());
+            if (newRoutine == null || newRoutine.getUserId() != user.getUserId()) {
+                return new ResponseEntity<>("Only an admin can reassign log to use someone else's routine. This would change ownership of the log.", HttpStatus.FORBIDDEN);
             }
         }
 
@@ -141,7 +145,7 @@ public class LogController {
     public ResponseEntity<?> findAll(Authentication auth) {
         User user = AuthUtil.getUser(auth);
         if (user == null || !user.hasRole(Role.ADMIN)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Admins only.", HttpStatus.FORBIDDEN);
         }
         return ResponseEntity.ok(service.findAll());
     }
