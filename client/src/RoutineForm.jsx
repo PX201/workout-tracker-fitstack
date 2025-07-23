@@ -14,6 +14,7 @@ function RoutineForm() {
   const [errors, setErrors] = useState({});
   const url = "http://localhost:8080/api/user"
   const muscleUrl = "http://localhost:8080/api/muscles";
+  let editRoutineId = 0;
 
   // initial page load
   useEffect(() => {
@@ -37,7 +38,18 @@ function RoutineForm() {
         }
       }).catch(console.log);
 
-    // HTTP request to get routines
+    // get routines
+    fetchRoutines();
+  }, []);
+
+  // HTTP Request to fetch routines
+  const fetchRoutines = () => {
+    const init = {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
+      }
+    }
     fetch(`${url}/me/routine`, init)
       .then(response => {
         if (response.status === 200 || response.status === 403) {
@@ -48,7 +60,7 @@ function RoutineForm() {
       }).then(data => {
         setRoutines(data);
       }).catch(console.log);
-  }, []);
+  }
 
   // delete routine
   const handleDelete = (routineId) => {
@@ -68,6 +80,7 @@ function RoutineForm() {
           if (response.status === 204) { // successful delete
             const newRoutines = routines.filter(r => r.routineId !== routineId);
             setRoutines(newRoutines);
+            setErrors([]);
           } else { // failure to delete
             return Promise.reject(`Unexpected Status Code: ${response.status}`);
           }
@@ -114,10 +127,9 @@ function RoutineForm() {
           return Promise.reject(`Unexpected Status Code: ${response.status}`);
         }
       }).then(data => {
-        if (data.title) { // add routine to our routine list
-          const newRoutines = [ ...routines ];
-          newRoutines.push(routine);
-          setRoutines(newRoutines);
+        if (data.title) {
+          fetchRoutines(); // fetch updated routine list
+          setErrors([]); // reset errors on success
         } else {
           setErrors(data);
         }
@@ -143,7 +155,7 @@ function RoutineForm() {
                     <h4>{r.title}</h4>
                     <p>Muscle Groups:
                       {r.muscles.slice(0, -1).map(m => { return <span key={m}>&nbsp;{m.toLowerCase().replace("_", " ")},</span> })}
-                      &nbsp;{r.muscles.length > 0 && (r.muscles[r.muscles.length-1].toLowerCase().replace("_", " "))}
+                      &nbsp;{r.muscles.length > 0 && (r.muscles[r.muscles.length - 1].toLowerCase().replace("_", " "))}
                     </p>
                     <button className="btn btn-outline-warning me-2">
                       Edit
