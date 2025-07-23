@@ -1,4 +1,4 @@
-package com.fitstack.workout_tracker;
+package com.fitstack.workout_tracker.config;
 
 import com.fitstack.workout_tracker.data.UserRepository;
 import com.fitstack.workout_tracker.models.Role;
