@@ -1,0 +1,38 @@
+@user_url = http://localhost:8080/api/user
+@admin_url = http://localhost:8080/api/admin
+
+@jwt_token = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInVzZXJJZCI6Miwic3ViIjoiZHRlc3RlckBlbWFpbC5jb20iLCJpYXQiOjE3NTMyNDA1NDksImV4cCI6MTc1MzI0MjM0OX0.U8P-BG0hjv_yJKeKoe5Tx9ubA_IKEysj1cY0uhz6tdc
+
+
+### Get my routines
+GET {{user_url}}/me/routine
+Authorization: Bearer {{jwt_token}}
+
+### Add a new routine
+POST {{user_url}}/me/routine
+Authorization: Bearer {{jwt_token}}
+Content-Type: application/json
+
+{
+  "title": "Morning Workout",
+  "muscles": ["LOWER_BACK", "UPPER_BACK"]
+}
+
+### Update a routine by ID
+PUT {{user_url}}/me/routine/1
+Authorization: Bearer {{jwt_token}}
+Content-Type: application/json
+
+{
+  "routineId": 1,
+  "title": "Updated Routine Name",
+  "muscles": ["FOREARM"]
+}
+
+### Delete a routine by ID
+DELETE {{user_url}}/routine/4
+Authorization: Bearer {{jwt_token}}
+
+### Admin: Get all routines
+GET {{admin_url}}/routine
+Authorization: Bearer {{jwt_token}}
