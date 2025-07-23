@@ -1,0 +1,6 @@
+@base_url = http://localhost:8080/api/muscles
+@jwtToken = {{place_jwt_token_here}}
+### Get all muscles
+
+GET  {{base_url}} HTTP/1.1
+Authorization: Bearer {{jwtToken}}

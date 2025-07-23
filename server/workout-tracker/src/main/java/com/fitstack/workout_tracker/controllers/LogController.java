@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -66,7 +67,7 @@ public class LogController {
         if (routine.getUserId() != currentUserId) {
             return new ResponseEntity<>("You can only add logs for your own routines.", HttpStatus.FORBIDDEN);
         }
-
+        log.setDate(LocalDate.now());
         Result<Log> result = service.addLog(log);
         if (!result.isSuccess()) {
             return new ResponseEntity<>(result.getMessages(), HttpStatus.BAD_REQUEST);
