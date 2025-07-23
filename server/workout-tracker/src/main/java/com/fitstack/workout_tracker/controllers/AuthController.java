@@ -6,6 +6,7 @@ import com.fitstack.workout_tracker.dto.AuthRequest;
 import com.fitstack.workout_tracker.dto.JwtResponse;
 import com.fitstack.workout_tracker.dto.RegisterRequest;
 import com.fitstack.workout_tracker.models.User;
+import com.fitstack.workout_tracker.security.AuthService;
 import com.fitstack.workout_tracker.utils.ErrorResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +22,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     @Autowired
-    UserService userService;
+    AuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request){
-        Result<User> result = userService.register(request);
+        Result<User> result = authService.register(request);
         if (!result.isSuccess()) {
             return ErrorResponse.build(result);
         }
@@ -34,7 +35,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request){
-        Result<JwtResponse> result = userService.login(request);
+        Result<JwtResponse> result = authService.login(request);
         if (!result.isSuccess()) {
             return ErrorResponse.build(result);
         }
