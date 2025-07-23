@@ -57,7 +57,6 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "userId": 6,
   "email": "updatedemani@gmail.com",
   "username": "updatedUsername"
 }
