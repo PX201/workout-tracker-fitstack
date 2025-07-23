@@ -5,16 +5,53 @@ import UserNavbar from "./UserNavbar";
 
 function RoutineForm() {
   const [routines, setRoutines] = useState([]);
-  const muscles = ["muscle 1", "muscle 2", "muscle 3", "muscle 4", "muscle 5"];
+  const muscles = [
+    { id: 1, name: "trapezius" },
+    { id: 2, name: "upper-back" },
+    { id: 3, name: "lower-back" },
+    { id: 4, name: "chest" },
+    { id: 5, name: "biceps" },
+    { id: 6, name: "triceps" },
+    { id: 7, name: "forearm" },
+    { id: 8, name: "back-deltoids" },
+    { id: 9, name: "front-deltoids" },
+    { id: 10, name: "abs" },
+    { id: 11, name: "obliques" },
+    { id: 12, name: "adductor" },
+    { id: 13, name: "abductors" },
+    { id: 14, name: "hamstring" },
+    { id: 15, name: "quadriceps" },
+    { id: 16, name: "calves" },
+    { id: 17, name: "gluteal" },
+    { id: 18, name: "head" },
+    { id: 19, name: "neck" },
+    { id: 20, name: "knees" },
+    { id: 21, name: "left-soleus" },
+    { id: 22, name: "right-soleus" }
+  ];
   const navigate = useNavigate();
+  const url = "http://localhost:8080/api/user"
 
   useEffect(() => {
-    // TODO: replace with HTTP request to get routines (and muscles)
-    setRoutines([
-      { routine_id: 1, title: "routine 1", muscles: ["muscle 1", "muscle 2"] },
-      { routine_id: 2, title: "routine 2", muscles: ["muscle 2", "muscle 3"] },
-      { routine_id: 3, title: "routine 3", muscles: ["muscle 1", "muscle 3"] },
-    ]);
+    // HTTP request to get routines
+    const init = {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
+      }
+    }
+    fetch(`${url}/me/routine`, init)
+      .then(response => {
+        if (response.status === 200 || response.status === 403) {
+          return response.json();
+        } else {
+          return Promise.reject(`Unexpected Status Code: ${response.status}`);
+        }
+      }).then(data => {
+        console.log(data);
+        console.log(sessionStorage.getItem("me"));
+        setRoutines(data);
+      }).catch(console.log);
   }, []);
 
   const handleSubmit = (event) => {
@@ -36,11 +73,11 @@ function RoutineForm() {
             <div>
               {routines.map(r => {
                 return (
-                  <div key={r.routine_id} className="border border-muted rounded mb-2 p-2">
+                  <div key={r.routineId} className="border border-muted rounded mb-2 p-2">
                     <h4>{r.title}</h4>
                     <p>Muscle Groups:
-                      {r.muscles.slice(0, -1).map(m => { return <span key={m}>&nbsp;{m},</span> })}
-                      &nbsp;{r.muscles.slice(-1)}
+                      {r.muscles.slice(0, -1).map(m => { return <span key={m}>&nbsp;{m.toLowerCase()},</span> })}
+                      &nbsp;{r.muscles.length > 0 && (r.muscles.slice(-1)[0].toLowerCase())}
                     </p>
                     <button className="btn btn-outline-warning me-2">
                       Edit
@@ -65,9 +102,9 @@ function RoutineForm() {
               </fieldset>
               {muscles.map(m => {
                 return (
-                  <fieldset key={m}>
-                    <label htmlFor={m}>{m}</label>
-                    <input type="checkbox" className="form-check-input" value="" id={m} />
+                  <fieldset key={m.id}>
+                    <label htmlFor={m.name}>{m.name}</label>
+                    <input type="checkbox" className="form-check-input" value="" id={m.name} />
                   </fieldset>
                 );
               })}
