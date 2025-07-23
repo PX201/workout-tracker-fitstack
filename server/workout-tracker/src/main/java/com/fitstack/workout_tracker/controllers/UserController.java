@@ -4,6 +4,8 @@ import com.fitstack.workout_tracker.domain.Result;
 import com.fitstack.workout_tracker.domain.UserService;
 import com.fitstack.workout_tracker.dto.PasswordChangeRequest;
 import com.fitstack.workout_tracker.dto.UserUpdateRequest;
+import com.fitstack.workout_tracker.exception.UserNotFoundException;
+import com.fitstack.workout_tracker.models.Role;
 import com.fitstack.workout_tracker.models.User;
 import com.fitstack.workout_tracker.utils.AuthUtil;
 import com.fitstack.workout_tracker.utils.ErrorResponse;
@@ -14,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 
@@ -50,7 +54,37 @@ public class UserController {
     }
 
 
+    // FOR ADMIN ACCESS ONLY
+
+    @GetMapping("admin/users")
+    public List<User> getAllUsers(){
+        return userService.findAll();
+    }
 
 
+    @PutMapping("admin/users/{userId}/{isActive}")
+    public ResponseEntity<?> updateUserState(@PathVariable long userId, @PathVariable boolean isActive){
+        if(!userService.setActiveStatus(userId, isActive)){
+            return ErrorResponse.build( "Something went wrong", HttpStatus.NOT_FOUND);
+        }
+        return  ResponseEntity.ok().build();
+    }
+
+    @PutMapping("admin/users/{userId}")
+    public ResponseEntity<?> setUserRoleToAdmin(@PathVariable long userId) throws UserNotFoundException {
+        if(!userService.updateRole(userId, Role.ADMIN)){
+            return ErrorResponse.build( "Something went wrong", HttpStatus.NOT_FOUND);
+        }
+        return  ResponseEntity.ok().build();
+    }
+
+
+    @DeleteMapping("admin/users/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable long userId){
+        if(!userService.deleteByUserId(userId)){
+            return ErrorResponse.build( "Something went wrong", HttpStatus.NOT_FOUND);
+        }
+        return  ResponseEntity.noContent().build();
+    }
 
 }

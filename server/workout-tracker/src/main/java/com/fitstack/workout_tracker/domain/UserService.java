@@ -98,7 +98,7 @@ public class UserService {
         return result;
     }
 
-    public boolean delete(long userId) {
+    public boolean deleteByUserId(long userId) {
         return userRepository.deleteByUserId(userId);
     }
 
@@ -120,7 +120,7 @@ public class UserService {
         return result;
     }
 
-    // for later: implement reactivate/deactivate user
+
     public boolean setActiveStatus(long userId, boolean isActive){
         User user = userRepository.findByUserId(userId);
         if (user == null) {
