@@ -30,7 +30,9 @@ function AdminUserList() {
   const toggleActive = (userId) => {
     const user = users.find(u => u.userId === userId);
 
+    // show confirmation popup first
     if (window.confirm(`${user.active ? "Deactivate " : "Activate "} user ${user.username}?`)) {
+      
       const init = {
         method: "PUT",
         headers: {
@@ -55,6 +57,31 @@ function AdminUserList() {
             setUsers(newUsers);
           } else {
             setErrors(data);
+          }
+        }).catch(console.log);
+    }
+  }
+
+  // delete user
+  const handleDelete = (userId) => {
+    const user = users.find(u => u.userId === userId);
+
+    // show confirmation popup first
+    if (window.confirm(`Delete user ${user.username}?`)) {
+
+      const init = {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem("me")}`
+        }
+      };
+      fetch(`${adminUrl}/${userId}`, init)
+        .then(response => {
+          if (response.status === 204) { // successful delete
+            const newUsers = users.filter(u => u.userId !== userId);
+            setUsers(newUsers);
+          } else { // failure to delete
+            return Promise.reject(`Unexpected Status Code: ${response.status}`);
           }
         }).catch(console.log);
     }
@@ -94,7 +121,7 @@ function AdminUserList() {
                       Activate
                     </button>
                   )}
-                  <button className="btn btn-outline-danger">
+                  <button className="btn btn-outline-danger" onClick={() => {handleDelete(u.userId)}}>
                     Delete
                   </button>
                 </div>
