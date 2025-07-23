@@ -43,6 +43,7 @@ function Registration() {
         if (data.userId) {
           navigate(`/login/${data.username}`);
         } else if (data.messages) {
+          user.repeatPassword = user.password;
           setErrors(data);
         }
       }).catch(console.log);

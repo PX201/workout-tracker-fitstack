@@ -1,19 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { DEFAULT_USER, userUrl } from "./components/userInfo.js" 
 
 function UserNavbar() {
-  const [user, setUser] = useState("<username>");
+  const [user, setUser] = useState(DEFAULT_USER);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // fetch user info
+    const init = { 
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
+      }
+    };
+    fetch(userUrl, init)
+    .then(response => {
+      if (response.status === 200) {
+        return response.json();
+      }
+    }).then(data => {
+      setUser(data);
+    });
+  }, []);
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
+      // remove user token
+      sessionStorage.removeItem("me");
       navigate("/");
     }
   }
 
   return (
     <nav className="navbar navbar-expand-lg bg-light">
-      <h2 className="me-auto ps-4">Welcome {user}</h2>
+      <h2 className="me-auto ps-4">Welcome {user.username}</h2>
       <div className="navbar-nav ms-auto p-2 pe-4">
           <Link type="button" className="active nav-link ms-4" to={'/profile'}>Profile</Link>
           <Link type="button" className="active nav-link ms-4" to={'/calendar'}>Calendar</Link>
