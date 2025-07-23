@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UserNavbar from "./UserNavbar";
-import { DEFAULT_USER, userUrl, userToken } from "./components/userInfo.js" 
+import { DEFAULT_USER, userUrl } from "./components/userInfo.js" 
 
 function UserForm() {
   const [user, setUser] = useState(DEFAULT_USER);
@@ -13,7 +13,7 @@ function UserForm() {
     const init = { 
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${userToken}`
+        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
       }
     };
     fetch(userUrl, init)
@@ -48,7 +48,7 @@ function UserForm() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${userToken}`
+        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
       },
       body: JSON.stringify({userId: user.userId, email: user.email, username: user.username})
     };

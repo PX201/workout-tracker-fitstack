@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { DEFAULT_USER, userUrl, userToken } from "./components/userInfo.js" 
+import { DEFAULT_USER, userUrl } from "./components/userInfo.js" 
 
 function UserNavbar() {
   const [user, setUser] = useState(DEFAULT_USER);
@@ -11,7 +11,7 @@ function UserNavbar() {
     const init = { 
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${userToken}`
+        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
       }
     };
     fetch(userUrl, init)

@@ -9,5 +9,3 @@ export const DEFAULT_USER = {
 };
 
 export const userUrl = "http://localhost:8080/api/user/me";
-
-export const userToken = sessionStorage.getItem("me");

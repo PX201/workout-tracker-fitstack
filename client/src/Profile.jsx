@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import UserNavbar from "./UserNavbar";
-import { DEFAULT_USER, userUrl, userToken } from "./components/userInfo.js" 
+import { DEFAULT_USER, userUrl } from "./components/userInfo.js" 
 
 function Profile() {
   const [user, setUser] = useState(DEFAULT_USER);
@@ -11,7 +11,7 @@ function Profile() {
     const init = { 
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${userToken}`
+        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
       }
     };
     fetch(userUrl, init)
