@@ -49,3 +49,28 @@ CREATE TABLE log (
     notes TEXT,
     FOREIGN KEY (routine_id) REFERENCES routine(routine_id) ON UPDATE CASCADE ON DELETE SET NULL
 );
+
+-- Insert
+INSERT INTO muscle_group (muscle_id, name) values
+        (1, "trapezius"),
+        (2, "upper-back"),
+        (3, "lower-back"),
+        (4, "chest"),
+        (5, "biceps"),
+        (6, "triceps"),
+        (7, "forearm"),
+        (8, "back-deltoids"),
+        (9, "front-deltoids"),
+        (10, "abs"),
+        (11, "obliques"),
+        (12, "adductor"),
+        (13, "abductors"),
+        (14, "hamstring"),
+        (15, "quadriceps"),
+        (16, "calves"),
+        (17, "gluteal"),
+        (18, "head"),
+        (19, "neck"),
+        (20, "knees"),
+        (21, "left-soleus"),
+        (22, "right-soleus"); 
