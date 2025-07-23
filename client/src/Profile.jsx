@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import UserNavbar from "./UserNavbar";
-import { DEFAULT_USER, userUrl } from "./components/userInfo.js" 
+import { DEFAULT_USER, userUrl } from "./components/UserInfo.js" 
 
 function Profile() {
   const [user, setUser] = useState(DEFAULT_USER);

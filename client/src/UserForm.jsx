@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UserNavbar from "./UserNavbar";
-import { DEFAULT_USER, userUrl } from "./components/userInfo.js" 
+import { DEFAULT_USER, userUrl } from "./components/UserInfo.js" 
 
 function UserForm() {
   const [user, setUser] = useState(DEFAULT_USER);

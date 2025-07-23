@@ -28,7 +28,7 @@ function Login() {
     };
     fetch(url, init)
       .then(response => {
-        if (response.status === 202 || response.status === 400 || response.status === 404) {
+        if (response.status === 200 || response.status === 400 || response.status === 404) {
           return response.json();
         } else {
           return Promise.reject(`Unexpected Status Error: ${response.status}`);
@@ -37,7 +37,11 @@ function Login() {
         if (data.token) {
           // on successful login, put token in session storage
           sessionStorage.setItem("me", data.token);
-          navigate("/profile");
+          if (data.user.role === 'USER') {
+            navigate("/profile");
+          } else {
+            navigate("/admin/users")
+          }
         } else {
           setErrors(data);
         }
