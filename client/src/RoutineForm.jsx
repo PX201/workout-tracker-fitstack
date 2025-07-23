@@ -77,7 +77,7 @@ function RoutineForm() {
                     <h4>{r.title}</h4>
                     <p>Muscle Groups:
                       {r.muscles.slice(0, -1).map(m => { return <span key={m}>&nbsp;{m.toLowerCase()},</span> })}
-                      &nbsp;{r.muscles.slice(-1)[0].toLowerCase()}
+                      &nbsp;{r.muscles.length > 0 && (r.muscles.slice(-1)[0].toLowerCase())}
                     </p>
                     <button className="btn btn-outline-warning me-2">
                       Edit
