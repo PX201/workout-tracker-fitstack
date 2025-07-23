@@ -64,10 +64,14 @@ public class RoutineController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         if (!currentUser.hasRole(Role.ADMIN)) {
+            // existing routine must belong to them
             if (existing.getUserId() != currentUser.getUserId()) {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                return new ResponseEntity<>("You cannot update someone else's routine.", HttpStatus.FORBIDDEN);
             }
-            routine.setUserId(existing.getUserId());
+            // updated userId must still be theirs
+            if (routine.getUserId() != currentUser.getUserId()) {
+                return new ResponseEntity<>("Only an admin can reassign routine ownership.", HttpStatus.FORBIDDEN);
+            }
         }
         Result<Routine> result = routineService.updateRoutine(routine);
         if (result.isSuccess()) {

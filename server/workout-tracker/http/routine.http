@@ -1,12 +1,12 @@
 @user_url = http://localhost:8080/api/user
 @admin_url = http://localhost:8080/api/admin
 
-@jwt_token = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInVzZXJJZCI6Miwic3ViIjoiZHRlc3RlckBlbWFpbC5jb20iLCJpYXQiOjE3NTMyNDA1NDksImV4cCI6MTc1MzI0MjM0OX0.U8P-BG0hjv_yJKeKoe5Tx9ubA_IKEysj1cY0uhz6tdc
-
+@jwt_token = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInVzZXJJZCI6Miwic3ViIjoiZHRlc3RlckBlbWFpbC5jb20iLCJpYXQiOjE3NTMyNTA1MDksImV4cCI6MTc1MzI1MjMwOX0.5gDYYzmWrol2fgOl4iKaKSi_yKz4JV5aDi_dy0DR6iI
+@jwt_admin = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImRvdWdAZ21haWwuY29tIiwiaWF0IjoxNzUzMjUwNTI5LCJleHAiOjE3NTMyNTIzMjl9.oTfnIpZvwv2JUtMSaNOEK0j3Ly9PzBzS8WnFFjGkaQk
 
 ### Get my routines
 GET {{user_url}}/me/routine
-Authorization: Bearer {{jwt_token}}
+Authorization: Bearer {{jwt_admin}}
 
 ### Add a new routine
 POST {{user_url}}/me/routine
@@ -14,25 +14,26 @@ Authorization: Bearer {{jwt_token}}
 Content-Type: application/json
 
 {
-  "title": "Morning Workout",
+  "title": "Morning abs user",
   "muscles": ["LOWER_BACK", "UPPER_BACK"]
 }
 
 ### Update a routine by ID
 PUT {{user_url}}/me/routine/1
-Authorization: Bearer {{jwt_token}}
+Authorization: Bearer {{jwt_admin}}
 Content-Type: application/json
 
 {
   "routineId": 1,
-  "title": "Updated Routine Name",
+  "userId": 1,
+  "title": "zebra",
   "muscles": ["FOREARM"]
 }
 
 ### Delete a routine by ID
-DELETE {{user_url}}/routine/4
-Authorization: Bearer {{jwt_token}}
+DELETE {{user_url}}/routine/3
+Authorization: Bearer {{jwt_admin}}
 
 ### Admin: Get all routines
 GET {{admin_url}}/routine
-Authorization: Bearer {{jwt_token}}
+Authorization: Bearer {{jwt_admin}}
