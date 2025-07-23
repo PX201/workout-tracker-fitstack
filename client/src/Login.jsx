@@ -26,19 +26,17 @@ function Login() {
       },
       body: JSON.stringify(user)
     };
-    //console.log(user);
-    //console.log(init);
     fetch(url, init)
       .then(response => {
-        console.log("401");
-        if (response.status === 202 || response.status === 400) {
+        if (response.status === 202 || response.status === 400 || response.status === 404) {
           return response.json();
         } else {
           return Promise.reject(`Unexpected Status Error: ${response.status}`);
         }
       }).then(data => {
         if (data.token) {
-          // TODO: store token somehow
+          // on successful login, put token in session storage
+          sessionStorage.setItem("me", data.token);
           navigate("/profile");
         } else {
           setErrors(data);

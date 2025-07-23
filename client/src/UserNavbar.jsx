@@ -7,6 +7,7 @@ function UserNavbar() {
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
+      sessionStorage.removeItem("me");
       navigate("/");
     }
   }
