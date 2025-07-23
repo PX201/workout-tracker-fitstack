@@ -62,10 +62,10 @@ public class UserService {
         return result;
     }
 
-    public Result<User> updateBasicInfo(UserUpdateRequest userReq) {
+    public Result<User> updateBasicInfo(UserUpdateRequest userReq, User existingUser) {
         // Validation
         Result<User> result = new Result<>();
-        User existingUser = userRepository.findByUserId(userReq.getUserId());
+        // User existingUser = userRepository.findByUserId(userReq.getUserId());
 
         if(existingUser == null){
             result.addErrorMessage("User Not Found");

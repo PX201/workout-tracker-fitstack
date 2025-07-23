@@ -38,7 +38,7 @@ public class AuthController {
         if (!result.isSuccess()) {
             return ErrorResponse.build(result);
         }
-        return new ResponseEntity<>(result.getPayload(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(result.getPayload(), HttpStatus.OK);
     }
 
 }
