@@ -34,8 +34,9 @@ public class UserController {
     }
 
     @PutMapping("user/me")
-    public ResponseEntity<?> updateBasicInfo(@Valid @RequestBody UserUpdateRequest request){
-        Result<User> result = userService.updateBasicInfo(request);
+    public ResponseEntity<?> updateBasicInfo(@Valid @RequestBody UserUpdateRequest request, Authentication auth){
+        User user = AuthUtil.getUser(auth);
+        Result<User> result = userService.updateBasicInfo(request, user);
         if(!result.isSuccess()){
             return ErrorResponse.build(result);
         }

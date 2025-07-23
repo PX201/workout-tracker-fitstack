@@ -9,9 +9,6 @@ import lombok.Data;
 @Data
 public class UserUpdateRequest {
 
-    @Min(value = 1, message = "required")
-    private long userId;
-
     @NotBlank(message = " is required")
     @Size(min = 5, max = 50, message = " must be between 5 and 50 characters")
     private String username;

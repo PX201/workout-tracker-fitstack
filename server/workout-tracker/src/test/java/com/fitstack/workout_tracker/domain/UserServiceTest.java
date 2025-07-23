@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 import java.time.LocalDate;
@@ -26,8 +28,13 @@ class UserServiceTest {
     @Mock
     UserRepository userRepository;
 
+    @Mock
+    PasswordEncoder passwordEncoder;
+
     @InjectMocks
     UserService userService;
+
+
 
     @Test
     void register_shouldRegister() {
@@ -37,6 +44,8 @@ class UserServiceTest {
         request.setPassword("hash1234");
 
         User expected = makeUser();
+
+        when(passwordEncoder.encode(request.getPassword())).thenReturn("hash1234");
 
         when(userRepository.findByEmail(request.getEmail())).thenReturn(null);
         when(userRepository.findAll()).thenReturn(List.of());
@@ -87,15 +96,14 @@ class UserServiceTest {
     void updateBasicInfo_shouldUpdateSuccessfully() {
         User existing = makeUser();
         UserUpdateRequest updateRequest = new UserUpdateRequest();
-        updateRequest.setUserId(existing.getUserId());
         updateRequest.setUsername("updated_username");
         updateRequest.setEmail("updated_email@example.com");
 
-        when(userRepository.findByUserId(existing.getUserId())).thenReturn(existing);
+        //when(userRepository.findByUserId(existing.getUserId())).thenReturn(existing);
         when(userRepository.findAll()).thenReturn(List.of());
         when(userRepository.updateUser(any(User.class))).thenReturn(true);
 
-        Result<User> result = userService.updateBasicInfo(updateRequest);
+        Result<User> result = userService.updateBasicInfo(updateRequest, existing);
         assertTrue(result.isSuccess());
         assertEquals("updated_email@example.com", result.getPayload().getEmail());
     }
@@ -103,13 +111,10 @@ class UserServiceTest {
     @Test
     void updateBasicInfo_shouldReturnNotFoundWhenUserNotFound() {
         UserUpdateRequest updateRequest = new UserUpdateRequest();
-        updateRequest.setUserId(999);
         updateRequest.setUsername("notExist");
         updateRequest.setEmail("none@email.com");
 
-        when(userRepository.findByUserId(999)).thenReturn(null);
-
-        Result<User> result = userService.updateBasicInfo( updateRequest);
+        Result<User> result = userService.updateBasicInfo( updateRequest, null);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("User Not Found"));
     }
