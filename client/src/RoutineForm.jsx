@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import UserNavbar from "./UserNavbar";
+import { useFormContext } from "react-hook-form";
 
 const DEFAULT_ROUTINE = {
   title: "",
@@ -106,6 +107,12 @@ function RoutineForm() {
     setRoutine(newRoutine);
   }
 
+  // fill form when editing
+  const fillFormEdit = (routineId) => {
+    const editRoutine = routines.find(r => r.routineId === routineId);
+    setRoutine(editRoutine);
+  }
+
   // add routine on form submit
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -157,7 +164,7 @@ function RoutineForm() {
                       {r.muscles.slice(0, -1).map(m => { return <span key={m}>&nbsp;{m.toLowerCase().replace("_", " ")},</span> })}
                       &nbsp;{r.muscles.length > 0 && (r.muscles[r.muscles.length - 1].toLowerCase().replace("_", " "))}
                     </p>
-                    <button className="btn btn-outline-warning me-2">
+                    <button className="btn btn-outline-warning me-2" onClick={() => {fillFormEdit(r.routineId)}}>
                       Edit
                     </button>
                     <button className="btn btn-outline-danger" onClick={() => { handleDelete(r.routineId) }}>
@@ -185,13 +192,13 @@ function RoutineForm() {
             <form onSubmit={handleSubmit} className="border border-muted rounded p-4">
               <fieldset className="mb-4">
                 <label htmlFor="title">Title</label>
-                <input type="text" className="form-control" id="title" name="title" onChange={handleChange} />
+                <input type="text" className="form-control" id="title" name="title" value={routine.title} onChange={handleChange} />
               </fieldset>
               {muscles.map(m => {
                 return (
                   <fieldset key={m}>
                     <label htmlFor={m}>{m.toLowerCase().replace("_", " ")}</label>
-                    <input type="checkbox" className="form-check-input" value="" id={m} name={m} onChange={handleChange} />
+                    <input type="checkbox" className="form-check-input" checked={routine.muscles.includes(m)} id={m} name={m} onChange={handleChange} />
                   </fieldset>
                 );
               })}
