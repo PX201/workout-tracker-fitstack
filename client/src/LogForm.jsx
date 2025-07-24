@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import UserNavbar from "./UserNavbar";
 
 const DEFAULT_LOG = {
   routineId: 0,
@@ -81,7 +80,6 @@ function LogForm() {
 
   return (
     <>
-      <UserNavbar />
       <section className="container-sm mt-5">
         <div className="text-center mb-4">
           <h2>Add Log</h2>

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import UserNavbar from "./UserNavbar";
 import { DEFAULT_USER, userUrl } from "./components/UserInfo.js" 
 
 function Profile() {
@@ -33,7 +32,6 @@ function Profile() {
 
   return (
     <>
-      <UserNavbar />
       <section className="container">
         <div className="text-center mt-4 mb-4">
           <h2>{user.username}'s Profile</h2>

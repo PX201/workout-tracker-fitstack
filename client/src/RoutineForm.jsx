@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import UserNavbar from "./UserNavbar";
 
 const DEFAULT_ROUTINE = {
   title: "",
@@ -204,7 +203,6 @@ function RoutineForm() {
 
   return (
     <>
-      <UserNavbar />
       <section className="container-sm mt-5">
         <div className="row justify-content-around">
 
