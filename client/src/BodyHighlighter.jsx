@@ -144,7 +144,7 @@ function BodyHighlighter() {
               />
               <div className="col-2"></div>
         </div>
-        <p class="p2 bg-white text-dark px-2 py-1 d-inline-block rounded shadow-sm"> <strong>NOTE:</strong> Body diagram reflects activity over the past month</p>
+        <p className="p2 bg-white text-dark px-2 py-1 d-inline-block rounded shadow-sm"> <strong>NOTE:</strong> Body diagram reflects activity over the past month</p>
       </section>
     </>
   );

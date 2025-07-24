@@ -35,7 +35,6 @@ function Calendar() {
         date,
         count
       }));
-      console.log(dateCountsArray);
       setDates(dateCountsArray);
     })
     .catch(err => {
