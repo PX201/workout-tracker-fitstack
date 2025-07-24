@@ -72,23 +72,25 @@ function handleDelete(logId) {
         {logs.length === 0 ? (
           <p>No logs found. <Link to="/log/add">Add your first log</Link></p>
         ) : (
-          <table className="table table-striped bg-primary-subtle">
+          <table className="table table-striped">
             <thead>
               <tr>
                 <th>Routine</th>
-                <th>Date</th>
                 <th>Duration</th>
                 <th>Intensity</th>
                 <th>Notes</th>
                 <th>Actions</th>
+                <th>Date</th>
               </tr>
             </thead>
             <tbody>
               {logs.map(log => (
                 <tr key={log.logId}>
-                  <td>{log.routineTitle}</td>
-                  <td>{log.date}</td>
-                  <td>{log.duration} min</td>
+                  <td><em>{log.routineTitle}</em></td>
+                  <td>
+                    {log.duration >= 60 && `${Math.floor(log.duration / 60)}h `}
+                    {log.duration % 60}m
+                  </td>
                   <td>{log.intensity}</td>
                   <td>{log.notes}</td>
                   <td>
@@ -106,6 +108,7 @@ function handleDelete(logId) {
                       Delete
                     </button>
                   </td>
+                  <td>{new Date(log.date).toDateString()}</td>
                 </tr>
               ))}
             </tbody>

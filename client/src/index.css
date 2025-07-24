@@ -89,5 +89,8 @@ td, th {
 }
 
 th {
-  background-color: #337bff;
+  background-color: bisque !important;
+}
+tbody{
+  background-color: burlywood !important;
 }
