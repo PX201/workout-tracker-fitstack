@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
+import Stats from './Stats';
 
 function Calendar() {
   const [dates, setDates] = useState([]);
@@ -69,6 +70,7 @@ function Calendar() {
           />
         </div>
       </section>
+      <Stats/>
     </>
   );
 }
