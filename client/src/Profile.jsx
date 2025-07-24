@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import UserNavbar from "./UserNavbar";
+
+
 import { DEFAULT_USER, userUrl } from "./components/UserInfo.js" 
 
 function Profile() {
@@ -58,7 +59,7 @@ function handleDelete(logId) {
 
   return (
     <>
-      <UserNavbar />
+     
       <section className="container mt-5">
         <h2 className="text-center mb-4">Your Logs</h2>
 

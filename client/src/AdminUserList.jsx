@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import AdminNavbar from "./AdminNavbar";
 
 function AdminUserList() {
   const [users, setUsers] = useState([]);
@@ -103,7 +102,6 @@ function AdminUserList() {
 
   return (
     <>
-      <AdminNavbar />
       <section className="container d-flex justify-content-center">
         <div className="col-12">
           <div className="text-center mb-4">

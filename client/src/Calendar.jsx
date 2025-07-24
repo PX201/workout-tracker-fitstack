@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
-import UserNavbar from './UserNavbar';
 
 function Calendar() {
   const [dates, setDates] = useState([]);
@@ -57,7 +56,6 @@ function Calendar() {
 
   return (
     <>
-      <UserNavbar />
       <section className="container mt-5">
         <div className="text-center">
           <h2>Workout Calendar</h2>
