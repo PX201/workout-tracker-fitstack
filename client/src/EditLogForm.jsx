@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import UserNavbar from "./UserNavbar";
 
 function EditLog() {
   const location = useLocation();
@@ -56,7 +55,6 @@ function EditLog() {
 
   return (
     <>
-      <UserNavbar />
       <section className="container-sm mt-5">
         <div className="text-center mb-4">
           <h2>Edit Log</h2>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import AdminNavbar from "./AdminNavbar";
 
 const TOKEN = sessionStorage.getItem("me");
 const HEADERS = {
@@ -136,14 +135,13 @@ const EditRoutineForm = ({ routineId, routines, setRoutines, onCancel }) => {
   const [muscles, setMuscles] = useState([]);
   const [errors, setErrors] = useState({});
   const routineUrl = `http://localhost:8080/api/user/me/routine/${routineId}`;
-  const muscleUrl = "http://localhost:8080/api/muscles";
 
   useEffect(() => {
     const init = {
       headers: HEADERS,
     };
 
-    fetch(muscleUrl, init)
+    fetch(MUSCLE_URL, init)
       .then(response => response.json())
       .then(setMuscles)
       .catch(console.log);
