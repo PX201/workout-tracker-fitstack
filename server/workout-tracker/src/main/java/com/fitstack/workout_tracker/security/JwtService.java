@@ -19,8 +19,8 @@ import java.util.function.Function;
 public class JwtService {
     @Value("${jwt.secretKey}")
     private String SECRET_KEY; // 256-bit key (hex string)
-    private static final long EXPIRATION_MIN = 30; //
-    private static final long EXPIRATION_MS = 1000 * 60 * EXPIRATION_MIN; // 30 min
+    private static final long EXPIRATION_MINUTES = 60; //
+    private static final long EXPIRATION_MS = 1000 * 60 * EXPIRATION_MINUTES; // 30 min
 
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
