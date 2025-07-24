@@ -253,20 +253,20 @@ function RoutineForm() {
               {muscles.map(m => {
                 return (
                   <fieldset key={m}>
-                    <label htmlFor={m}>{m.toLowerCase().replace("_", " ")}</label>
                     <input type="checkbox" className="form-check-input" checked={routine.muscles.includes(m)} id={m} name={m} onChange={handleChange} />
+                    <label htmlFor={m}>&nbsp;{m.toLowerCase().replace("_", " ")}</label>
                   </fieldset>
                 );
               })}
               <button
                 type="submit"
-                className="btn btn-outline-success me-2"
+                className="btn btn-outline-success me-2 mt-2"
               >
                 {editRoutineId > 0 ? "Update Routine" : "Add Routine"}
               </button>
               <button
                 type="button"
-                className="btn btn-outline-danger"
+                className="btn btn-outline-danger mt-2"
                 onClick={cancelAddOrEdit}
               >
                 {editRoutineId > 0 ? "Cancel Edit" : "Cancel"}
