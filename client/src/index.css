@@ -94,3 +94,12 @@ th {
 tbody{
   background-color: burlywood !important;
 }
+
+.navbar-nav .nav-link {
+  font-size: 1.5rem;
+}
+
+.navbar-nav .nav-item {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
