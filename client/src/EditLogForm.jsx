@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import UserNavbar from "./UserNavbar";
 
 function EditLog() {
   const location = useLocation();
