@@ -78,7 +78,7 @@ function LogForm() {
     <>
       <section className="container-sm mt-5">
         <div className="text-center mb-4">
-          <h2>Add Log</h2>
+          <h2>Log A Workout!</h2>
         </div>
 
         {errors.length > 0 && (

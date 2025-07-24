@@ -72,7 +72,7 @@ function handleDelete(logId) {
         {logs.length === 0 ? (
           <p>No logs found. <Link to="/log/add">Add your first log</Link></p>
         ) : (
-          <table className="table table-striped">
+          <table className="table table-striped bg-primary-subtle">
             <thead>
               <tr>
                 <th>Routine</th>

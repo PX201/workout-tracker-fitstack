@@ -110,7 +110,7 @@ function BodyHighlighter() {
           <div className="col-2"></div>
           <Model className="col-4"
             data={body}
-            style={{ margin: "auto", width: '25rem', padding: '5rem' }}
+            style={{ margin: "auto", width: '40rem', padding: '8rem' }}
             onClick={handleClick}
             highlightedColors={[
               "#FFF9C4", // 1 - very faint yellow
@@ -126,7 +126,7 @@ function BodyHighlighter() {
             ]} />
           <Model className="col-4"
             data={body}
-            style={{ margin: "auto", width: '25rem', padding: '5rem' }}
+            style={{ margin: "auto", width: '40rem', padding: '8rem' }}
             onClick={handleClick}
             highlightedColors={[
               "#FFF9C4", // 1 - very faint yellow
@@ -144,6 +144,7 @@ function BodyHighlighter() {
               />
               <div className="col-2"></div>
         </div>
+        <p>Body diagram reflects activity over the past month</p>
       </section>
     </>
   );
