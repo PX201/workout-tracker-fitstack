@@ -28,29 +28,28 @@ function EditLog() {
     evt.preventDefault();
     setErrors([]);
     console.log(log);
-    fetch(`http://localhost:8080/api/log/${log.logId}`, {
+    fetch(`http://localhost:8080/api/user/log/${log.logId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
       },
       body: JSON.stringify(log),
     })
       .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return res.json().then((err) => Promise.reject(err));
-      })
-      .then(() => {
+      if (res.ok) {
         navigate("/profile");
-      })
-      .catch((err) => {
-        if (err && err.length) {
-          setErrors(err);
-        } else {
-          setErrors(["Unknown error occurred."]);
-        }
-      });
+      } else {
+        return res.json().then((err) => Promise.reject(err));
+      }
+    })
+    .catch((err) => {
+      if (Array.isArray(err) && err.length > 0) {
+        setErrors(err);
+      } else {
+        setErrors(["Unknown error occurred."]);
+      }
+    });
   };
 
   const routineTitle = passedLog?.routineTitle || "";
