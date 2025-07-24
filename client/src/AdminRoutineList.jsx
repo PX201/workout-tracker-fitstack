@@ -95,6 +95,7 @@ const RoutinesList = ({ routines, handleEdit, handleDelete }) => (
   <table className="table table-striped table-hover">
     <thead className="table-dark">
       <tr>
+        <th>User ID</th>
         <th>Title</th>
         <th>Muscle Groups</th>
         <th>Actions</th>
@@ -103,6 +104,7 @@ const RoutinesList = ({ routines, handleEdit, handleDelete }) => (
     <tbody>
       {routines.map((r) => (
         <tr key={r.routineId}>
+          <td>{r.userId}</td>
           <td>{r.title}</td>
           <td>
             {r.muscles.slice(0, -1).map((m) => (
