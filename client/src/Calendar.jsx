@@ -53,7 +53,9 @@ function Calendar() {
   /*
   TODO: add hover functionality?
   */
-
+  console.log(getStartDate());
+  console.log(Date.now());
+  console.log(dates);
   return (
     <>
       <section className="container mt-5">
@@ -63,7 +65,7 @@ function Calendar() {
         <div className="mx-auto m-5 w-75">
           <CalendarHeatmap
             startDate={getStartDate()}
-            endDate={Date.now()}
+            endDate={new Date()}
             showWeekdayLabels={false}
             values={dates}
           />
