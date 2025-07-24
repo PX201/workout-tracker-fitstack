@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
-const SESSION_TIME = 60000;
+const SESSION_TIME = 1000 * 60 * 60;
 
 {/* TODO: if user not loged in display navbar with register and login */}
 {/* TODO: if user loged in as USER display user navbar */}
