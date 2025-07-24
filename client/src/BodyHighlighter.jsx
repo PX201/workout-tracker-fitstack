@@ -10,11 +10,6 @@ function BodyHighlighter() {
   const url = "http://localhost:8080/api/user";
 
   useEffect(() => {
-    // TODO: replace with fetch() call
-    setBody([
-      { name: 'Bench Press', muscles: ['chest', 'triceps', 'front-deltoids'] },
-      { name: 'Push Ups', muscles: ['chest'] },
-    ]);
     const init = {
       method: "GET",
       headers: {
