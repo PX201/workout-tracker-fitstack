@@ -1,6 +1,7 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
-
+const SESSION_TIME = 60000;
 
 {/* TODO: if user not loged in display navbar with register and login */}
 {/* TODO: if user loged in as USER display user navbar */}
@@ -42,6 +43,13 @@ const UserNavbar = () => {
         }
     }
 
+    useEffect(() => {
+        setTimeout(() => { 
+            sessionStorage.clear();
+            window.location.href = "/";
+           }, SESSION_TIME);
+    }, []);
+
     return (
     <nav className="navbar navbar-expand-lg bg-light">
         <h2 className="me-auto ps-4">Welcome {username}</h2>
@@ -70,6 +78,13 @@ const AdminNavbar = () => {
             window.location.href = "/";
         }
     }
+
+    useEffect(() => {
+        setTimeout(() => { 
+            sessionStorage.clear();
+            window.location.href = "/";
+           }, SESSION_TIME);
+    }, []);
 
     return (
     <nav className="navbar navbar-expand-lg bg-light">
