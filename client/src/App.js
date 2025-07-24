@@ -9,6 +9,7 @@ import BodyHighlighter from "./BodyHighlighter";
 import Calendar from "./Calendar";
 import AdminUserList from "./AdminUserList";
 import AdminRoutineList from "./AdminRoutineList";
+import EditLogForm from "./EditLogForm";
 import Navbar from "./Navbar";
 import Home from "./Home";
 import NotFound from "./NotFound";
@@ -33,6 +34,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/log/add" element={<LogForm />} />
+              <Route path="/log/edit/:logId" element={<EditLogForm />} />
               <Route path="/routine/add" element={<RoutineForm />} />
               <Route path="/edit" element={<UserForm />} />
               <Route path="/body" element={<BodyHighlighter />} />
