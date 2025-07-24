@@ -13,6 +13,7 @@ import EditLogForm from "./EditLogForm";
 import Navbar from "./Navbar";
 import Home from "./Home";
 import NotFound from "./NotFound";
+import Footer from "./Footer";
 
 function App() {
   const userRole = sessionStorage.getItem("user_role");
@@ -52,6 +53,7 @@ function App() {
 
         <Route path="/*" element={<NotFound/>}></Route>
       </Routes>
+      <Footer/>
     </BrowserRouter>
   );
 }
