@@ -3,9 +3,7 @@ import { Link } from "react-router-dom";
 
 const SESSION_TIME = 1000 * 60 * 60;
 
-{/* TODO: if user not loged in display navbar with register and login */}
-{/* TODO: if user loged in as USER display user navbar */}
-{/* TODO: if user loged in as ADMIN display admin navbar (will have Admin and user related links)*/}
+
 const Navbar = () => {
 
     const userRole = sessionStorage.getItem("user_role");
@@ -21,90 +19,122 @@ const Navbar = () => {
 
 
 const DefaultNavbar = () => {
-    return (
-        <nav className="navbar navbar-expand-lg bg-light">
-          <div className="navbar-nav ms-auto p-2 pe-4">
-              <Link type="button" className="active nav-link ms-4" to={'/login'}>Login</Link>
-              <Link type="button" className="active nav-link ms-4" to={'/register'}>Register</Link>
-          </div>
-        </nav>
-      );
-}
+  return (
+    <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+      <div className="container-fluid">
+        <Link className="navbar-brand fw-bold" to="/">Workout Tracker</Link>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#defaultNavbar">
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-
-const UserNavbar = () => {    
-    const username = sessionStorage.getItem("user_username");
-    const handleLogout = () => {
-        if (window.confirm("Are you sure you want to log out?")) {
-            // remove user token
-            sessionStorage.clear();
-            // force reload and go back to home
-            window.location.href = "/";
-        }
-    }
-
-    useEffect(() => {
-        setTimeout(() => { 
-            sessionStorage.clear();
-            window.location.href = "/";
-           }, SESSION_TIME);
-    }, []);
-
-    return (
-    <nav className="navbar navbar-expand-lg bg-light">
-        <h2 className="me-auto ps-4">Welcome {username}</h2>
-        <div className="navbar-nav ms-auto p-2 pe-4">
-            <Link type="button" className="active nav-link ms-4" to={'/profile'}>Profile</Link>
-            <Link type="button" className="active nav-link ms-4" to={'/calendar'}>Calendar</Link>
-            <Link type="button" className="active nav-link ms-4" to={'/body'}>Body</Link>
-            <Link type="button" className="btn btn-dark ms-4" to={'/log/add'}>Add Log</Link>
-            <Link type="button" className="btn btn-dark ms-4" to={'/routine/add'}>Add Routine</Link>
-            <Link type="button" className="btn btn-dark ms-4" to={'/edit'}>Edit User</Link>
-            <button className="btn btn-danger ms-4 me-4" onClick={handleLogout}>Logout</button>
+        <div className="collapse navbar-collapse" id="defaultNavbar">
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item"><Link className="nav-link" to="/login">Login</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/register">Register</Link></li>
+          </ul>
         </div>
+      </div>
     </nav>
-    );
-}
+  );
+};
 
 const AdminNavbar = () => {
-    const username = sessionStorage.getItem("user_username");
-    
-    const handleLogout = () => {
-        if (window.confirm("Are you sure you want to log out?")) {
-            // clear the session keys and reload the page
-            sessionStorage.clear();
-            window.location.reload();
-            //navigate("/");
-            window.location.href = "/";
-        }
+  const username = sessionStorage.getItem("user_username");
+
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to log out?")) {
+      sessionStorage.clear();
+      window.location.href = "/";
     }
+  };
 
-    useEffect(() => {
-        setTimeout(() => { 
-            sessionStorage.clear();
-            window.location.href = "/";
-           }, SESSION_TIME);
-    }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      sessionStorage.clear();
+      window.location.href = "/";
+    }, SESSION_TIME);
+  }, []);
 
-    return (
-    <nav className="navbar navbar-expand-lg bg-light">
-        <h2 className="me-auto ps-4">Welcome {username}</h2>
-        <div className="navbar-nav ms-auto p-2 pe-4">
-            <Link type="button" className="active nav-link ms-4" to={'/admin/users'}>User List</Link>
-            <Link type="button" className="active nav-link ms-4" to={'/admin/routines'}>Routine List</Link>
+  return (
+    <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+      <div className="container-fluid">
+        <Link className="navbar-brand fw-bold" to="/">Workout Tracker</Link>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        <div className="collapse navbar-collapse" id="adminNavbar">
+          <ul className="navbar-nav me-auto">
+            <li className="nav-item">
+              <span className="nav-link">Welcome, <strong>{username}</strong></span>
+            </li>
+            <li className="nav-item"><Link className="nav-link" to="/admin/users">User List</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/admin/routines">Routine List</Link></li>
+          </ul>
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item"><Link className="nav-link" to="/profile">Profile</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/calendar">Calendar</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/body">Body</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/log/add">Add Log</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/routine/add">Add Routine</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/edit">Edit User</Link></li>
+            <li className="nav-item">
+              <button className="nav-link btn btn-link text-danger" onClick={handleLogout}>Logout</button>
+            </li>
+          </ul>
         </div>
-
-        <div className="navbar-nav ms-auto p-2 pe-4">
-              <Link type="button" className="active nav-link ms-4" to={'/profile'}>Profile</Link>
-              <Link type="button" className="active nav-link ms-4" to={'/calendar'}>Calendar</Link>
-              <Link type="button" className="active nav-link ms-4" to={'/body'}>Body</Link>
-              <Link type="button" className="btn btn-dark ms-4" to={'/log/add'}>Add Log</Link>
-              <Link type="button" className="btn btn-dark ms-4" to={'/routine/add'}>Add Routine</Link>
-              <Link type="button" className="btn btn-dark ms-4" to={'/edit'}>Edit User</Link>
-              <button className="btn btn-danger ms-4 me-4" onClick={handleLogout}>Logout</button>
-          </div>
+      </div>
     </nav>
-    );
-}
+  );
+};
+
+const UserNavbar = () => {
+  const username = sessionStorage.getItem("user_username");
+
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to log out?")) {
+      sessionStorage.clear();
+      window.location.href = "/";
+    }
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      sessionStorage.clear();
+      window.location.href = "/";
+    }, SESSION_TIME);
+  }, []);
+
+  return (
+    <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+      <div className="container-fluid">
+        <Link className="navbar-brand fw-bold" to="/">Workout Tracker</Link>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#userNavbar">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        <div className="collapse navbar-collapse" id="userNavbar">
+          <ul className="navbar-nav me-auto">
+            <li className="nav-item">
+              <span className="nav-link">Welcome, <strong>{username}</strong></span>
+            </li>
+          </ul>
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item"><Link className="nav-link" to="/profile">Profile</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/calendar">Calendar</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/body">Body</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/log/add">Add Log</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/routine/add">Add Routine</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/edit">Edit User</Link></li>
+            <li className="nav-item">
+              <button className="nav-link btn btn-link text-danger" onClick={handleLogout}>Logout</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
 
 export default Navbar;
