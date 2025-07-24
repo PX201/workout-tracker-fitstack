@@ -43,7 +43,6 @@ function LogForm() {
     const newLog = { ...log };
     newLog[event.target.id] = event.target.value;
     setLog(newLog);
-    console.log(log);
   }
 
   const handleSubmit = (event) => {
@@ -60,19 +59,16 @@ function LogForm() {
     };
     fetch(`${url}/log`, init)
     .then(response => {
-      console.log(response);
-      console.log(log);
       if (response.status === 201 || response.status === 400 || response.status === 401 || response.status === 403 || response.status === 404) {
         return response.json();
       } else {
         return Promise.reject(`Unexpected Status Code: ${response.status}`);
       }
     }).then(data => {
-      console.log(data);
       if (data.logId) {
         navigate("/profile");
       } else {
-        setErrors(errors);
+        setErrors(data);
       }
     }
     );
@@ -85,7 +81,7 @@ function LogForm() {
           <h2>Add Log</h2>
         </div>
 
-        {errors.length !== 0 && (
+        {errors.length > 0 && (
           <div className="row d-flex justify-content-center">
             <div className="alert alert-danger mt-4 mb-4 col-4">
               <ul>
