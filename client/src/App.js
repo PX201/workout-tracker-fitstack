@@ -44,6 +44,7 @@ function App() {
             <>
               <Route path="/admin/users" element={<AdminUserList />} />
               <Route path="/admin/routines" element={<AdminRoutineList />} />
+              <Route path="/admin/routines/:routineId" element={<AdminRoutineList />} />
             </>
           )}
 
