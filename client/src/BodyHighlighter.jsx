@@ -73,7 +73,6 @@ function BodyHighlighter() {
     if (muscles.length === 0 || routines.length === 0) {
       return;
     }
-    console.log(logs);
 
     /*
     body structure: [ { name: <routine title>, muscles: [<muscle groups>] }, ...]
