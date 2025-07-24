@@ -33,7 +33,9 @@ function LogForm() {
       }).then(data => {
         setRoutines(data);
         const newLog = { ...log };
-        newLog.routineId = data[0].routineId; // set initial routine for log
+        if (data.length > 0) {
+          newLog.routineId = data[0].routineId; // set initial routine for log
+        }
         setLog(newLog);
       }).catch(console.log);    
   }, []);
@@ -59,14 +61,18 @@ function LogForm() {
     };
     fetch(`${url}/log`, init)
     .then(response => {
-      if (response.status === 201 || response.status === 400 || response.status === 401 || response.status === 403 || response.status === 404) {
+      if (response.status === 201 || response.status === 400) {
         return response.json();
+      } else if (response.status === 401 || response.status === 403 || response.status === 404){
+        return response.text();
       } else {
         return Promise.reject(`Unexpected Status Code: ${response.status}`);
       }
     }).then(data => {
       if (data.logId) {
         navigate("/profile");
+      } else if (typeof data === "string"){
+        setErrors([data]);
       } else {
         setErrors(data);
       }
