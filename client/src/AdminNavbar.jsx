@@ -28,7 +28,11 @@ function AdminNavbar() {
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
-      navigate("/");
+      // clear the session keys and reload the page
+      sessionStorage.clear();
+      window.location.reload();
+      //navigate("/");
+      window.location.href = "/";
     }
   }
 

@@ -41,10 +41,14 @@ function Login() {
           sessionStorage.setItem("user_email", data.user.email);
           sessionStorage.setItem("user_role", data.user.role);
           if (data.user.role === 'USER') {
-            navigate("/profile");
+            // force page to reload and get the new session items
+            window.location.href = "/profile";
+            //navigate("/profile");
           } else {
-            navigate("/admin/users")
+            window.location.href = "/admin/users";
+            //navigate("/admin/users")
           }
+          
         } else {
           setErrors(data);
         }
