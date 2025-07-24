@@ -19,11 +19,10 @@ function App() {
   const userRole = sessionStorage.getItem("user_role");
   return (
     <BrowserRouter>
+     <div className="d-flex flex-column min-vh-100">
       <Navbar/>
+      <main className="flex-fill container py-4">
       <Routes>
-        {/* TODO: if user not login display this routes only: '/', '/login', '/register',  '/*' (Not found page)*/}
-        {/* TODO: if user loged in as USER display user routes:   '/profile', '/edit', '/log',/calendar, '/routine' ..  */}
-        {/* TODO: if user loged in as ADMIN display user/admin routes: "/admin/routines", "/admin/users", '/profile', '/edit', '/log',/calendar, '/routine' ..  */}
           {!userRole ? (
             <>
               <Route path="/" element={<Login />} />
@@ -53,7 +52,9 @@ function App() {
 
         <Route path="/*" element={<NotFound/>}></Route>
       </Routes>
+      </main>
       <Footer/>
+      </div>
     </BrowserRouter>
   );
 }
