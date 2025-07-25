@@ -10,11 +10,6 @@ function BodyHighlighter() {
   const url = "http://localhost:8080/api/user";
 
   useEffect(() => {
-    // TODO: replace with fetch() call
-    setBody([
-      { name: 'Bench Press', muscles: ['chest', 'triceps', 'front-deltoids'] },
-      { name: 'Push Ups', muscles: ['chest'] },
-    ]);
     const init = {
       method: "GET",
       headers: {
@@ -108,42 +103,47 @@ function BodyHighlighter() {
         <h2 className="text-center">Muscle Groups Worked On</h2>
         <div className="row">
           <div className="col-2"></div>
-          <Model className="col-4"
-            data={body}
-            style={{ margin: "auto", width: '25rem', padding: '5rem' }}
-            onClick={handleClick}
-            highlightedColors={[
-              "#FFF9C4", // 1 - very faint yellow
-              "#FFF176", // 2 - soft yellow
-              "#FFD54F", // 3 - yellow-orange
-              "#FFB74D", // 4 - light orange
-              "#FF8A65", // 5 - orange/red mix
-              "#EF5350", // 6 - light red
-              "#E53935", // 7 - strong red
-              "#C62828", // 8 - darker red
-              "#B71C1C", // 9 - deep red
-              "#7F0000", // 10 - very dark red
-            ]} />
-          <Model className="col-4"
-            data={body}
-            style={{ margin: "auto", width: '25rem', padding: '5rem' }}
-            onClick={handleClick}
-            highlightedColors={[
-              "#FFF9C4", // 1 - very faint yellow
-              "#FFF176", // 2 - soft yellow
-              "#FFD54F", // 3 - yellow-orange
-              "#FFB74D", // 4 - light orange
-              "#FF8A65", // 5 - orange/red mix
-              "#EF5350", // 6 - light red
-              "#E53935", // 7 - strong red
-              "#C62828", // 8 - darker red
-              "#B71C1C", // 9 - deep red
-              "#7F0000", // 10 - very dark red
-            ]}
-              type = "posterior"
-              />
-              <div className="col-2"></div>
+          <div className="col-4 bg-white bg-opacity-25 rounded m-4">
+            <Model
+              data={body}
+              style={{ margin: "auto", width: '40rem', padding: '8rem' }}
+              onClick={handleClick}
+              highlightedColors={[
+                "#FFF9C4", // 1 - very faint yellow
+                "#FFF176", // 2 - soft yellow
+                "#FFD54F", // 3 - yellow-orange
+                "#FFB74D", // 4 - light orange
+                "#FF8A65", // 5 - orange/red mix
+                "#EF5350", // 6 - light red
+                "#E53935", // 7 - strong red
+                "#C62828", // 8 - darker red
+                "#B71C1C", // 9 - deep red
+                "#7F0000", // 10 - very dark red
+              ]} />
+          </div>
+          <div className="col-4 bg-white bg-opacity-25 rounded m-4">
+            <Model
+              data={body}
+              style={{ margin: "auto", width: '40rem', padding: '8rem' }}
+              onClick={handleClick}
+              highlightedColors={[
+                "#FFF9C4", // 1 - very faint yellow
+                "#FFF176", // 2 - soft yellow
+                "#FFD54F", // 3 - yellow-orange
+                "#FFB74D", // 4 - light orange
+                "#FF8A65", // 5 - orange/red mix
+                "#EF5350", // 6 - light red
+                "#E53935", // 7 - strong red
+                "#C62828", // 8 - darker red
+                "#B71C1C", // 9 - deep red
+                "#7F0000", // 10 - very dark red
+              ]}
+              type="posterior"
+            />
+          </div>
+          <div className="col-2"></div>
         </div>
+        <p className="p2 bg-white text-dark px-2 py-1 d-inline-block rounded shadow-sm"> <strong>NOTE:</strong> Body diagram reflects activity over the past month</p>
       </section>
     </>
   );

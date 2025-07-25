@@ -214,9 +214,9 @@ function RoutineForm() {
             <div>
               {routines.map(r => {
                 return (
-                  <div key={r.routineId} className="border border-muted rounded mb-2 p-2">
+                  <div key={r.routineId} className="border border-muted rounded mb-2 p-2 bg-primary-subtle">
                     <h4>{r.title}</h4>
-                    <p>Muscle Groups:
+                    <p>
                       {r.muscles.slice(0, -1).map(m => { return <span key={m}>&nbsp;{m.toLowerCase().replace("_", " ")},</span> })}
                       &nbsp;{r.muscles.length > 0 && (r.muscles[r.muscles.length - 1].toLowerCase().replace("_", " "))}
                     </p>
@@ -245,7 +245,7 @@ function RoutineForm() {
                 </div>
               </div>
             )}
-            <form onSubmit={handleSubmit} className="border border-muted rounded p-4">
+            <form onSubmit={handleSubmit} className="border border-muted rounded mb-2 p-2 bg-primary-subtle">
               <fieldset className="mb-4">
                 <label htmlFor="title">Title</label>
                 <input type="text" className="form-control" id="title" name="title" value={routine.title} onChange={handleChange} />

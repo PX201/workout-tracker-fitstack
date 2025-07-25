@@ -100,6 +100,32 @@ function AdminUserList() {
     }
   };
 
+  const handleUpdateRoleToAdmin = (userId) => {
+    const user = users.find((u) => u.userId === userId);
+
+    // show confirmation popup first
+    if (window.confirm(`Give Admin role to the user: ${user.username}?`)) {
+      const init = {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("me")}`,
+        },
+      };
+      fetch(`${adminUrl}/${userId}`, init)
+        .then((response) => {
+          if (response.status === 200) {
+            // successfully updated to admin
+            const newUsers = users.filter((u) => u.userId !== userId);
+            setUsers(newUsers);
+          } else {
+            // failure to update the user role
+            return Promise.reject(`Unexpected Status Code: ${response.status}`);
+          }
+        })
+        .catch(console.log);
+    }
+  }
+
   return (
     <>
       <section className="container d-flex justify-content-center">
@@ -122,6 +148,7 @@ function AdminUserList() {
             users={users}
             toggleActive={toggleActive}
             handleDelete={handleDelete}
+            handleUpdateRoleToAdmin={handleUpdateRoleToAdmin}
           />
         </div>
        
@@ -130,7 +157,7 @@ function AdminUserList() {
   );
 }
 
-const UserList = ({ users, toggleActive, handleDelete }) => {
+const UserList = ({ users, toggleActive, handleDelete, handleUpdateRoleToAdmin }) => {
   return (
     <table className="table table-striped table-hover">
       <thead className="table-dark">
@@ -157,6 +184,12 @@ const UserList = ({ users, toggleActive, handleDelete }) => {
                 onClick={() => toggleActive(u.userId)}
               >
                 {u.active ? "Deactivate" : "Activate"}
+              </button>
+              <button
+                className="btn btn-outline-warning me-2"
+                onClick={() => handleUpdateRoleToAdmin(u.userId)}
+              >
+                Make Admin
               </button>
               <button
                 className="btn btn-outline-danger"

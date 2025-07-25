@@ -35,7 +35,6 @@ function Calendar() {
         date,
         count
       }));
-      console.log(dateCountsArray);
       setDates(dateCountsArray);
     })
     .catch(err => {
@@ -54,17 +53,16 @@ function Calendar() {
   /*
   TODO: add hover functionality?
   */
-
   return (
     <>
       <section className="container mt-5">
         <div className="text-center">
-          <h2>Workout Calendar</h2>
+          <h2>Consistency Calendar</h2>
         </div>
-        <div className="mx-auto m-5 w-50">
+        <div className="mx-auto m-5 w-75">
           <CalendarHeatmap
             startDate={getStartDate()}
-            endDate={Date.now()}
+            endDate={new Date()}
             showWeekdayLabels={false}
             values={dates}
           />
