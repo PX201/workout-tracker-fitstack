@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
                         // User-accessible routes (GET, POST, PUT, DELETE)
                         .requestMatchers("/api/user/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
 
