@@ -46,9 +46,11 @@ const EditUserInfoForm = () => {
       })
       .then((data) => {
         if (!data) {
+          // Display sucess message
+          window.alert("Your account details have been updated successfully!");
           // logout and remove all the session key/values
           sessionStorage.clear();
-          navigate("/");
+          window.location.href = "/";
         } else if (data.messages) {
           setErrors(data);
         }

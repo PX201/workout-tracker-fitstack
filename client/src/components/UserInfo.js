@@ -8,4 +8,4 @@ export const DEFAULT_USER = {
   active: true
 };
 
-export const userUrl = "http://localhost:8080/api/user/me";
+export const userUrl = "http://localhost:8080/api/user";
