@@ -103,3 +103,17 @@ tbody{
   margin-left: 0.5rem;
   margin-right: 0.5rem;
 }
+
+/* heatmap color scale */
+.color-empty { fill: #e9ecef! ; }
+.color-scale-1 { fill: #cfe9ff; }
+.color-scale-2 { fill: #7fc1ff; }
+.color-scale-3 { fill: #3793ff; }
+.color-scale-4 { fill: #0d6efd; }
+
+/* Legend boxes */
+.legend-box { width:16px; height:16px; display:inline-block; border-radius:3px; }
+.legend-box.color-scale-1 { background-color:#d0ebff; }
+.legend-box.color-scale-2 { background-color:#74c0fc; }
+.legend-box.color-scale-3 { background-color:#339af0; }
+.legend-box.color-scale-4 { background-color:#1864ab; }

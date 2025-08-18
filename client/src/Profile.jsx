@@ -7,7 +7,6 @@ import { DEFAULT_USER, userUrl } from "./components/UserInfo.js"
 function Profile() {
   const [user, setUser] = useState(DEFAULT_USER);
   const [logs, setLogs] = useState([]);
-  const url = "http://localhost:8080/api/user";
   const [errors, setErrors] = useState([]);
 
   useEffect(() => {
@@ -18,7 +17,7 @@ function Profile() {
         "Authorization": `Bearer ${sessionStorage.getItem("me")}`
       }
     };
-    fetch(`${url}/log/me`, init)
+    fetch(`${userUrl}/log/me`, init)
       .then(response => {
         if (response.status === 200) {
           return response.json();
@@ -43,7 +42,7 @@ function Profile() {
       }
     };
 
-    fetch(`${url}/log/${logId}`, init)
+    fetch(`${userUrl}/log/${logId}`, init)
       .then(response => {
         if (response.ok) {
           setLogs(prev => prev.filter(l => l.logId !== logId));
