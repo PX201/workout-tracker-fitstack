@@ -55,8 +55,11 @@ const PasswordChangeForm = () => {
       })
       .then((data) => {
         if (!data) {
-        // successful navigate to login page 
-          navigate('/');
+          // Display sucess message
+          window.alert("Password updated successfully!");
+          // successful logout and navigate to login page 
+          sessionStorage.clear();
+          window.location.href = "/";
         } else if (data.messages) {
           setErrors(data);
         }

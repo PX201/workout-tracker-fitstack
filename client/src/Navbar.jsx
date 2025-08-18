@@ -77,7 +77,7 @@ const AdminNavbar = () => {
             <li className="nav-item"><Link className="nav-link" to="/body">Body</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/log/add">Add Log</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/routine/add">Add Routine</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/edit">Edit User</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/edit">Account</Link></li>
             <li className="nav-item">
               <button className="nav-link btn btn-link text-danger" onClick={handleLogout}>Logout</button>
             </li>
@@ -125,7 +125,7 @@ const UserNavbar = () => {
             <li className="nav-item"><Link className="nav-link" to="/body">Body</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/log/add">Add Log</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/routine/add">Add Routine</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/edit">Edit User</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/edit">Account</Link></li>
             <li className="nav-item">
               <button className="nav-link btn btn-link text-danger" onClick={handleLogout}>Logout</button>
             </li>
