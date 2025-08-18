@@ -1,5 +1,5 @@
 services:
-  db:
+  database:
     image: mysql:8.0
     environment:
       MYSQL_DATABASE: ${MYSQL_DB}
@@ -17,12 +17,12 @@ services:
       timeout: 3s
       retries: 10
 
-  backend:
+  server:
     build:
       context: ./server/workout-tracker
       dockerfile: Dockerfile
     depends_on:
-      db:
+      database:
         condition: service_healthy
     environment:
       DB_URL: ${DB_URL}
@@ -35,12 +35,12 @@ services:
     ports:
       - "8080:8080"
 
-  frontend:
+  client:
     build:
       context: ./client
       dockerfile: Dockerfile
     depends_on:
-      - backend
+      - server
     ports:
       - "3000:80"
 
