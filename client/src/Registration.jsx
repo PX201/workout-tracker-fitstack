@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { BASE_API_URL } from "./components/UserInfo";
 
 function Registration() {
   const [user, setUser] = useState({});
   const [errors, setErrors] = useState({});
-  const url = "http://localhost:8080/api/auth/register";
+  const url = `${BASE_API_URL}/auth/register`;
   const navigate = useNavigate();
 
   // update user with form input

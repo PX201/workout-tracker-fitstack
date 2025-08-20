@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { BASE_API_URL } from "./components/UserInfo";
 
-    const BASE_URL = `http://localhost:8080/api`;
     const DEFAULT_REQUEST_BODY = {
         currentPassword: "",
         newPassword: "",
@@ -12,7 +12,7 @@ const PasswordChangeForm = () => {
     const navigate = useNavigate();
 
     const [requestBody, setRequestBody] = useState(DEFAULT_REQUEST_BODY);
-    const changePasswordUrl = `${BASE_URL}/user/me/changepassword`;
+    const changePasswordUrl = `${BASE_API_URL}/user/me/changepassword`;
     const [errors, setErrors] = useState([]);
 
 

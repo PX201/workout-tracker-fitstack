@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { BASE_API_URL } from "./components/UserInfo";
 
 function Login() {
   const [user, setUser] = useState({});
   const { username } = useParams();
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const url = "http://localhost:8080/api/auth/login";
 
   // update login credentials with form input
   const handleChange = (event) => {
@@ -26,7 +26,7 @@ function Login() {
       },
       body: JSON.stringify(user)
     };
-    fetch(url, init)
+    fetch(`${BASE_API_URL}/auth/login`, init)
       .then(response => {
         if (response.status === 200 || response.status === 400 || response.status === 404) {
           return response.json();

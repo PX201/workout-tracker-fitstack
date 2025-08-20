@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { BASE_API_URL } from "./components/UserInfo";
 
-const BASE_URL = `http://localhost:8080/api`;
 const DEFAULT_REQUEST_BODY = {
   email: `${sessionStorage.getItem("user_email")}`,
   username: `${sessionStorage.getItem("user_username")}`,
 };
 
 const EditUserInfoForm = () => {
-  const editUserInfoUrl = `${BASE_URL}/user/me`;
+  const editUserInfoUrl = `${BASE_API_URL}/user/me`;
   const [requestBody, setRequestBody] = useState(DEFAULT_REQUEST_BODY);
   const [errors, setErrors] = useState([]);
   const navigate = useNavigate();

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 
-import { DEFAULT_USER, userUrl } from "./components/UserInfo.js"
+import { DEFAULT_USER, BASE_API_URL } from "./components/UserInfo.js"
 
 function Profile() {
   const [user, setUser] = useState(DEFAULT_USER);
@@ -17,7 +17,7 @@ function Profile() {
         "Authorization": `Bearer ${sessionStorage.getItem("me")}`
       }
     };
-    fetch(`${userUrl}/log/me`, init)
+    fetch(`${BASE_API_URL}/user/log/me`, init)
       .then(response => {
         if (response.status === 200) {
           return response.json();
@@ -42,7 +42,7 @@ function Profile() {
       }
     };
 
-    fetch(`${userUrl}/log/${logId}`, init)
+    fetch(`${BASE_API_URL}/user/log/${logId}`, init)
       .then(response => {
         if (response.ok) {
           setLogs(prev => prev.filter(l => l.logId !== logId));

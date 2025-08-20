@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
+import { BASE_API_URL } from "./components/UserInfo";
 
 function EditLog() {
   const location = useLocation();
@@ -27,7 +28,7 @@ function EditLog() {
     evt.preventDefault();
     setErrors([]);
     console.log(log);
-    fetch(`http://localhost:8080/api/user/log/${log.logId}`, {
+    fetch(`${BASE_API_URL}/user/log/${log.logId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

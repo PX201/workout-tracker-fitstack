@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { BASE_API_URL } from "./components/UserInfo";
 
 const DEFAULT_LOG = {
   routineId: 0,
@@ -13,7 +14,6 @@ function LogForm() {
   const [routines, setRoutines] = useState([]);
   const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
-  const url = "http://localhost:8080/api/user"
 
   useEffect(() => {
     // HTTP request to get routines
@@ -23,7 +23,7 @@ function LogForm() {
         "Authorization": `Bearer ${sessionStorage.getItem("me")}`
       }
     }
-    fetch(`${url}/me/routine`, init)
+    fetch(`${BASE_API_URL}/user/me/routine`, init)
       .then(response => {
         if (response.status === 200 || response.status === 403) {
           return response.json();
@@ -59,7 +59,7 @@ function LogForm() {
       },
       body: JSON.stringify(log)
     };
-    fetch(`${url}/log`, init)
+    fetch(`${BASE_API_URL}/user/log`, init)
     .then(response => {
       if (response.status === 201 || response.status === 400) {
         return response.json();

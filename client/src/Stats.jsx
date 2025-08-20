@@ -5,6 +5,7 @@ import {
   CategoryScale, LinearScale, BarElement, LineElement,
   Title, Tooltip, Legend, PointElement
 } from "chart.js";
+import { BASE_API_URL } from "./components/UserInfo";
 
 ChartJS.register(
   CategoryScale, LinearScale, BarElement, LineElement,
@@ -17,14 +18,13 @@ function Stats(){
   const [q, setQ] = useState("");
   const [sortBy, setSortBy] = useState("count"); // count | avgDuration | avgIntensity
 
-  const url = "http://localhost:8080/api/user";
 
   useEffect(() => {
     const init = {
       method: "GET",
       headers: { "Authorization": `Bearer ${sessionStorage.getItem("me")}` }
     };
-    fetch(`${url}/log/me`, init)
+    fetch(`${BASE_API_URL}/user/log/me`, init)
       .then(r => r.ok ? r.json() : Promise.reject(`Error ${r.status}`))
       .then(setLogs)
       .catch(err => { console.error(err); setError("Failed to load stats."); });

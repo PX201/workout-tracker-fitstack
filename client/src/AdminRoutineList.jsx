@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { BASE_API_URL } from "./components/UserInfo";
 
 const TOKEN = sessionStorage.getItem("me");
 const HEADERS = {
   Authorization: `Bearer ${TOKEN}`,
 };
-const ADMIN_ROUTINE_URL = "http://localhost:8080/api/admin/routine";
-const ROUTINE_URL = "http://localhost:8080/api/user/routine";
-const MUSCLE_URL = "http://localhost:8080/api/muscles";
+const ADMIN_ROUTINE_URL = `${BASE_API_URL}/admin/routine`;
+const ROUTINE_URL = `${BASE_API_URL}/user/routine`;
+const MUSCLE_URL = `${BASE_API_URL}/api/muscles`;
 
 
 function AdminRoutineList() {
@@ -136,7 +137,7 @@ const EditRoutineForm = ({ routineId, routines, setRoutines, onCancel }) => {
   const [routine, setRoutine] = useState(null);
   const [muscles, setMuscles] = useState([]);
   const [errors, setErrors] = useState({});
-  const routineUrl = `http://localhost:8080/api/user/me/routine/${routineId}`;
+  const routineUrl = `${BASE_API_URL}/user/me/routine/${routineId}`;
 
   useEffect(() => {
     const init = {

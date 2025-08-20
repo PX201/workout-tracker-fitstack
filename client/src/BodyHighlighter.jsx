@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Model from 'react-body-highlighter';
+import { BASE_API_URL } from "./components/UserInfo";
 
 function BodyHighlighter() {
   const [body, setBody] = useState([]);
   const [muscles, setMuscles] = useState([]);
   const [routines, setRoutines] = useState([]);
   const [logs, setLogs] = useState([]);
-  const muscleUrl = "http://localhost:8080/api/muscles";
-  const url = "http://localhost:8080/api/user";
 
   useEffect(() => {
     const init = {
@@ -17,7 +16,7 @@ function BodyHighlighter() {
       }
     }
     // HTTP request to get muscles
-    fetch(muscleUrl, init)
+    fetch(`${BASE_API_URL}/muscles`, init)
       .then(response => {
         if (response.status === 200) {
           return response.json();
@@ -31,7 +30,7 @@ function BodyHighlighter() {
       }).catch(console.log);
 
     // HTTP request to get logs
-    fetch(`${url}/log/me`, init)
+    fetch(`${BASE_API_URL}/user/log/me`, init)
       .then(response => {
         if (response.status === 200) {
           return response.json();
@@ -45,7 +44,7 @@ function BodyHighlighter() {
       }).catch(console.log);
 
     // HTTP request to get routines
-    fetch(`${url}/me/routine`, init)
+    fetch(`${BASE_API_URL}/user/me/routine`, init)
       .then(response => {
         if (response.status === 200 || response.status === 403) {
           return response.json();

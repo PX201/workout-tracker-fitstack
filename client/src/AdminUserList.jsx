@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { BASE_API_URL } from "./components/UserInfo";
 
 function AdminUserList() {
   const [users, setUsers] = useState([]);
   const [errors, setErrors] = useState([]);
-  const adminUrl = "http://localhost:8080/api/admin/users";
+  const adminUrl = `${BASE_API_URL}/admin/users`;
 
   useEffect(() => {
     // set user list with HTTP request

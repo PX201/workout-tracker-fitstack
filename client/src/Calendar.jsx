@@ -2,11 +2,12 @@ import { useEffect, useMemo, useState } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import Stats from './Stats';
+import { BASE_API_URL } from './components/UserInfo';
 
 function Calendar() {
   const [logs, setLogs] = useState([]);
   const [rangeMonths, setRangeMonths] = useState(12); // 3 / 6 / 12
-  const url = "http://localhost:8080/api/user";
+  const url = `${BASE_API_URL}/user`;
 
   useEffect(() => {
     const init = {
