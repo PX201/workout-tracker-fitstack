@@ -56,71 +56,71 @@ function Login() {
   }
 
   return (
-    <>
-      <section className="container-sm mt-5">
-        <div className="text-center mb-4">
-          <h1 className="mb-4">Fitstack Workout Tracker</h1>
-          {username && (
-            <div className="row d-flex justify-content-center">
-              <div className="alert alert-success mt-4 mb-4 col-4">
-                {username} registered successfully!
-              </div>
-            </div>
-          )}
-          <h2>Login:</h2>
-        </div>
-        {errors.messages && errors.messages.length !== 0 && (
+  <>
+    <section className="container-sm mt-5">
+      <div className="text-center mb-4">
+        <h1 className="mb-4">Fitstack Workout Tracker</h1>
+
+        {username && (
           <div className="row d-flex justify-content-center">
-            <div className="alert alert-danger mt-4 mb-4 col-4">
-              <ul>
-                {errors.messages.map(e => <li key={e}>{e}</li>)}
-              </ul>
+            <div className="alert alert-success mt-4 mb-4 col-10 col-md-6">
+              {username} registered successfully!
             </div>
           </div>
         )}
-        <div className="row">
-          <div className="col-4"></div>
-          <form onSubmit={handleSubmit} className="col-4 border border-muted rounded p-4">
-            <fieldset className="mb-4">
-              <label htmlFor="email">Email address</label>
-              <input
-                type="email"
-                className="form-control"
-                name="email"
-                id="email"
-                onChange={handleChange}
-              />
-            </fieldset>
-            <fieldset className="mb-4">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                name="password"
-                id="password"
-                onChange={handleChange}
-              />
-            </fieldset>
-            <div className="d-flex justify-content-between">
-              <button
-                className="btn btn-dark"
-              >
-                Login
-              </button>
-              <Link
-                type="button"
-                className="btn btn-link d-flex"
-                to={"/registration"}
-              >
-                New User?
-              </Link>
-            </div>
-          </form>
-          <div className="col-4"></div>
+
+        <h2 className="app-title">Login</h2>
+      </div>
+
+      {errors.messages && errors.messages.length !== 0 && (
+        <div className="row d-flex justify-content-center">
+          <div className="alert alert-danger mt-4 mb-4 col-10 col-md-6">
+            <ul>
+              {errors.messages.map((e) => (
+                <li key={e}>{e}</li>
+              ))}
+            </ul>
+          </div>
         </div>
-      </section>
-    </>
-  );
+      )}
+
+      <div className="row justify-content-center">
+        <form onSubmit={handleSubmit} className="col-12 col-md-6 col-lg-4 app-card app-card--dark">
+          <fieldset className="mb-4">
+            <label htmlFor="email">Email address</label>
+            <input
+              type="email"
+              className="form-control"
+              name="email"
+              id="email"
+              onChange={handleChange}
+            />
+          </fieldset>
+
+          <fieldset className="mb-4">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              className="form-control"
+              name="password"
+              id="password"
+              onChange={handleChange}
+            />
+          </fieldset>
+
+          <div className="d-flex justify-content-between">
+            <button type="submit" className="btn btn-success">
+              Login
+            </button>
+            <Link to="/registration" className="btn btn-link">
+              New User?
+            </Link>
+          </div>
+        </form>
+      </div>
+    </section>
+  </>
+);
 }
 
 export default Login;

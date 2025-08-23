@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import Model from 'react-body-highlighter';
+import React, { useEffect, useState, useMemo, useCallback } from "react";
+import Model from "react-body-highlighter";
 import { BASE_API_URL } from "./components/UserInfo";
 
 function BodyHighlighter() {
-  const [body, setBody] = useState([]);
   const [muscles, setMuscles] = useState([]);
   const [routines, setRoutines] = useState([]);
   const [logs, setLogs] = useState([]);
@@ -12,139 +11,115 @@ function BodyHighlighter() {
     const init = {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
-      }
-    }
-    // HTTP request to get muscles
+        Authorization: `Bearer ${sessionStorage.getItem("me")}`,
+      },
+    };
+
     fetch(`${BASE_API_URL}/muscles`, init)
-      .then(response => {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          return Promise.reject(`Unexpected Status Code: ${response.status}`);
-        }
-      }).then(data => {
-        if (data) {
-          setMuscles(data);
-        }
-      }).catch(console.log);
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data) => data && setMuscles(data))
+      .catch(console.log);
 
-    // HTTP request to get logs
     fetch(`${BASE_API_URL}/user/log/me`, init)
-      .then(response => {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          return Promise.reject(`Unexpected Status Code: ${response.status}`);
-        }
-      }).then(data => {
-        if (data) {
-          setLogs(data);
-        }
-      }).catch(console.log);
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data) => data && setLogs(data))
+      .catch(console.log);
 
-    // HTTP request to get routines
     fetch(`${BASE_API_URL}/user/me/routine`, init)
-      .then(response => {
-        if (response.status === 200 || response.status === 403) {
-          return response.json();
-        } else {
-          return Promise.reject(`Unexpected Status Code: ${response.status}`);
-        }
-      }).then(data => {
-        setRoutines(data);
-      }).catch(console.log);
-
-
+      .then((r) => (r.status === 200 || r.status === 403 ? r.json() : Promise.reject(r.status)))
+      .then((data) => setRoutines(data || []))
+      .catch(console.log);
   }, []);
 
-  // map log and routine data to body heatmap
-  useEffect(() => {
-    const newBody = [];
+  // Build body heatmap data from logs/routines (last 1 month)
+  const body = useMemo(() => {
+    if (!muscles.length || !routines.length) return [];
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
-    // if we haven't loaded muscles and routines yet, return
-    if (muscles.length === 0 || routines.length === 0) {
-      return;
-    }
-
-    /*
-    body structure: [ { name: <routine title>, muscles: [<muscle groups>] }, ...]
-    */
-    logs.forEach(l => {
-
-      // filter logs that are more than one month old
-      let today = new Date();
-      today.setMonth(today.getMonth() - 1);
-      if (today > Date.parse(l.date)) {
-        return;
-      }
-
-      const r = routines.find(r => r.routineId === l.routineId);
-      newBody.push({
+    const data = [];
+    for (const l of logs) {
+      if (Date.parse(l.date) < +oneMonthAgo) continue;
+      const r = routines.find((rr) => rr.routineId === l.routineId);
+      if (!r) continue;
+      data.push({
         name: r.title,
-        muscles: r.muscles.map(m => {
-          return m.toLowerCase().replace('_', '-'); // change strings like UPPER_BACK to upper-back
-        })
+        muscles: r.muscles.map((m) => m.toLowerCase().replace("_", "-")),
       });
-    });
-    setBody(newBody);
+    }
+    return data;
   }, [muscles, routines, logs]);
 
-  // TODO: replace click with hover?
-  const handleClick = React.useCallback(({ muscle, data }) => {
+  const handleClick = useCallback(({ muscle, data }) => {
     const { exercises, frequency } = data;
-    alert(`You've worked out your ${muscle} ${frequency} times through the following routines: ${exercises.slice(0, -1).map(e => { return `${e},`; })} ${exercises.slice(-1)}`);
-  }, [body]);
+    alert(
+      `You've worked out your ${muscle} ${frequency} times via: ${
+        exercises.length ? exercises.join(", ") : "—"
+      }`
+    );
+  }, []);
 
   return (
-    <>
-      <section className="container mt-5">
-        <h2 className="text-center">Muscle Groups Worked On</h2>
-        <div className="row">
-          <div className="col-2"></div>
-          <div className="col-4 bg-white bg-opacity-25 rounded m-4">
-            <Model
-              data={body}
-              style={{ margin: "auto", width: '40rem', padding: '8rem' }}
-              onClick={handleClick}
-              highlightedColors={[
-                "#FFF9C4", // 1 - very faint yellow
-                "#FFF176", // 2 - soft yellow
-                "#FFD54F", // 3 - yellow-orange
-                "#FFB74D", // 4 - light orange
-                "#FF8A65", // 5 - orange/red mix
-                "#EF5350", // 6 - light red
-                "#E53935", // 7 - strong red
-                "#C62828", // 8 - darker red
-                "#B71C1C", // 9 - deep red
-                "#7F0000", // 10 - very dark red
-              ]} />
+    <section className="container-fluid py-4">
+      <h2 className="text-center mb-3">Muscle Groups Worked On</h2>
+
+      {/* two panels: stack on mobile, side-by-side on lg+ */}
+      <div className="row g-3 justify-content-center">
+        <div className="col-12 col-md-10 col-lg-5">
+          <div className="heatmap-card">
+            <div className="heatmap-canvas">
+              <Model
+                data={body}
+                onClick={handleClick}
+                // let CSS control sizing; no fixed width/padding here
+                style={{ width: "100%", height: "100%" }}
+                highlightedColors={[
+                  "#FFF9C4",
+                  "#FFF176",
+                  "#FFD54F",
+                  "#FFB74D",
+                  "#FF8A65",
+                  "#EF5350",
+                  "#E53935",
+                  "#C62828",
+                  "#B71C1C",
+                  "#7F0000",
+                ]}
+              />
+            </div>
           </div>
-          <div className="col-4 bg-white bg-opacity-25 rounded m-4">
-            <Model
-              data={body}
-              style={{ margin: "auto", width: '40rem', padding: '8rem' }}
-              onClick={handleClick}
-              highlightedColors={[
-                "#FFF9C4", // 1 - very faint yellow
-                "#FFF176", // 2 - soft yellow
-                "#FFD54F", // 3 - yellow-orange
-                "#FFB74D", // 4 - light orange
-                "#FF8A65", // 5 - orange/red mix
-                "#EF5350", // 6 - light red
-                "#E53935", // 7 - strong red
-                "#C62828", // 8 - darker red
-                "#B71C1C", // 9 - deep red
-                "#7F0000", // 10 - very dark red
-              ]}
-              type="posterior"
-            />
-          </div>
-          <div className="col-2"></div>
         </div>
-        <p className="p2 bg-white text-dark px-2 py-1 d-inline-block rounded shadow-sm"> <strong>NOTE:</strong> Body diagram reflects activity over the past month</p>
-      </section>
-    </>
+
+        <div className="col-12 col-md-10 col-lg-5">
+          <div className="heatmap-card">
+            <div className="heatmap-canvas">
+              <Model
+                data={body}
+                type="posterior"
+                onClick={handleClick}
+                style={{ width: "100%", height: "100%" }}
+                highlightedColors={[
+                  "#FFF9C4",
+                  "#FFF176",
+                  "#FFD54F",
+                  "#FFB74D",
+                  "#FF8A65",
+                  "#EF5350",
+                  "#E53935",
+                  "#C62828",
+                  "#B71C1C",
+                  "#7F0000",
+                ]}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p className="bg-white text-dark px-2 py-1 d-inline-block rounded shadow-sm mt-3">
+        <strong>NOTE:</strong> Body diagram reflects activity over the past month
+      </p>
+    </section>
   );
 }
 
