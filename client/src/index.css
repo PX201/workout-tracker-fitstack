@@ -1,48 +1,41 @@
+/* ========== Reset & Base ========== */
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
   max-width: 100%;
 }
-
-html {
-  font-size: 62.5%;
-}
+html { font-size: 62.5%; }
 
 body {
   font-size: 1.8rem;
   line-height: 1.5;
   font-family: "Inter", sans-serif;
-
   background-image: url(https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHdvcmtvdXR8ZW58MHx8MHx8fDA%3D);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
+/* Dark overlay so foreground is readable */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
 
-h1, h2, h3{
+/* ========== Headings ========== */
+h1, h2, h3 {
   font-family: "Michroma", sans-serif;
   letter-spacing: 3px;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
   color: #ff5733;
-
 }
-
-h1{
-  font-size: 5rem;
-}
-h2, h3{
-  font-size: 3rem;
-}
-form {
-  background-color: lightyellow;
-}
-
-h2:hover {
-  color: #337bff;
-  transform: scale(1.1);
-}
+h1 { font-size: 5rem; }
+h2, h3 { font-size: 3rem; }
+h2:hover { color: #337bff; transform: scale(1.1); }
 
 h4, h5{
   text-align: center;
@@ -55,65 +48,257 @@ h4, h5{
   text-decoration: underline;
 }
 
-.btn-outline-warning {
-  background-color: #0d6efd;
-  color: #fff;
-  border-color: #0d6efd;
-}
+/* ========== Buttons ========== */
+.btn-outline-warning { background-color: #0d6efd; color: #fff; border-color: #0d6efd; }
+.btn-outline-success  { background-color: #198754; color: #fff; border-color: #198754; }
+.btn-outline-danger   { background-color: #dc3545; color: #fff; border-color: #dc3545; }
 
-.btn-outline-success {
-  background-color: #198754;
-  color: #fff;
-  border-color: #198754;
-}
+/* ========== Tables ========== */
+td, th { text-align: center; vertical-align: middle; }
+th { background-color: bisque !important; }
+tbody { background-color: burlywood !important; }
 
-.btn-outline-danger {
-  background-color: #dc3545;
-  color: #fff;
-  border-color: #dc3545;
+/* ========== Navbar (dark glass) ========== */
+.app-navbar {
+  box-shadow: 0 6px 20px rgba(0,0,0,.35);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
+.app-navbar--dark {
+  background: rgba(16, 18, 22, 0.75) !important; /* deep charcoal */
+  backdrop-filter: blur(8px);
+}
+.navbar.navbar-dark .navbar-brand,
+.navbar.navbar-dark .nav-link { color: #f1f3f5; }
+.navbar.navbar-dark .nav-link.active {
+  color: #ff5733;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+/* Improve toggler contrast over dark bg */
+.navbar-dark .navbar-toggler { border-color: rgba(255,255,255,.25); }
 
-body::before {
-  content: "";
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: -1;
+/* Offcanvas (mobile menu) */
+.app-offcanvas {
+  backdrop-filter: blur(8px);
 }
+.app-offcanvas--dark {
+  background: rgba(16, 18, 22, 0.92);
+  color: #e9ecef;
+  border-left: 1px solid rgba(255,255,255,0.06);
+}
+.app-offcanvas--dark .btn-close { filter: invert(1) grayscale(100%); }
+.app-offcanvas--dark .nav-link { color: #f1f3f5; }
+.app-offcanvas--dark .nav-link:hover { color: #ff5733; }
 
-td, th {
-  text-align: center;
-  vertical-align: middle;
-}
-
-th {
-  background-color: bisque !important;
-}
-tbody{
-  background-color: burlywood !important;
-}
-
-.navbar-nav .nav-link {
-  font-size: 1.5rem;
-}
-
-.navbar-nav .nav-item {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-}
-
-/* heatmap color scale */
-.color-empty { fill: #e9ecef! ; }
+/* ========== Heatmap legend/colors ========== */
+.color-empty { fill: #e9ecef !important; }
 .color-scale-1 { fill: #cfe9ff; }
 .color-scale-2 { fill: #7fc1ff; }
 .color-scale-3 { fill: #3793ff; }
 .color-scale-4 { fill: #0d6efd; }
-
-/* Legend boxes */
 .legend-box { width:16px; height:16px; display:inline-block; border-radius:3px; }
 .legend-box.color-scale-1 { background-color:#d0ebff; }
 .legend-box.color-scale-2 { background-color:#74c0fc; }
 .legend-box.color-scale-3 { background-color:#339af0; }
 .legend-box.color-scale-4 { background-color:#1864ab; }
+
+/* =========================================================
+   SHARED CARD/FORM SYSTEM
+   ========================================================= */
+.app-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  backdrop-filter: blur(6px);
+}
+.app-title {
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  color: #ff5733;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+}
+/* All forms inside cards will inherit a pale yellow */
+.app-form {
+  background: #fffbe6;
+  border: 1px solid #f1e5ac;
+  border-radius: 10px;
+  padding: 1.6rem;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+}
+/* Generic “list item card” */
+.app-item {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: transform .2s, box-shadow .2s;
+}
+.app-item:hover { transform: translateY(-2px); box-shadow: 0 3px 6px rgba(0,0,0,0.25); }
+/* Button row */
+.app-actions { display: flex; gap: .75rem; flex-wrap: nowrap; }
+.app-actions .btn { white-space: nowrap; min-width: 110px; }
+@media (max-width: 576px) {
+  .app-actions { flex-wrap: wrap; }
+  .app-actions .btn { flex: 1 1 100%; }
+}
+/* Make sure text inside light cards is dark/readable */
+.app-card, .app-form { color: #212529; }
+.app-card input, .app-card textarea, .app-card select { color: #212529; }
+
+/* ======= Optional DARK card variant (use: app-card app-card--dark) ======= */
+.app-card--dark {
+  background: rgba(16, 18, 22, 0.72);
+  color: #f8f9fa;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 8px 28px rgba(0,0,0,.45);
+  backdrop-filter: blur(8px);
+}
+.app-card--dark .form-label { color: #f1f3f5; }
+.app-card--dark .form-control,
+.app-card--dark .form-select,
+.app-card--dark textarea {
+  background: rgba(255,255,255,0.08);
+  color: #f8f9fa;
+  border-color: rgba(255,255,255,0.18);
+}
+.app-card--dark .form-control::placeholder,
+.app-card--dark textarea::placeholder { color: rgba(248,249,250,0.6); }
+.app-card--dark .form-control:focus,
+.app-card--dark .form-select:focus,
+.app-card--dark textarea:focus {
+  border-color: #ff5733;
+  box-shadow: 0 0 0 .2rem rgba(255, 87, 51, .25);
+}
+.app-card--dark .btn-outline-secondary { color: #f8f9fa; border-color: rgba(255,255,255,0.35); }
+.app-card--dark .btn-outline-secondary:hover { background: rgba(255,255,255,0.12); }
+/* Tables inside dark cards */
+.app-card--dark .table { color: #e9ecef; }
+.app-card--dark .table thead th { border-color: rgba(255,255,255,0.12); }
+.app-card--dark .table-striped > tbody > tr:nth-of-type(odd) > * {
+  color: #e9ecef;
+  background-color: rgba(255,255,255,0.04);
+}
+.app-card--dark .table > :not(caption) > * > * { border-color: rgba(255,255,255,0.08); }
+/* Sliders in dark cards */
+.app-card--dark .lf-range { background: linear-gradient(90deg, #375a7f, #ff5733); }
+.app-card--dark .lf-range::-webkit-slider-thumb,
+.app-card--dark .lf-range::-moz-range-thumb {
+  background: #ff5733; border-color: rgba(255,255,255,0.9);
+}
+/* Checkbox chips in RoutineForm on dark cards */
+.app-card--dark .rf-muscle { background: rgba(255,255,255,0.10); color: #f8f9fa; }
+/* Alerts inside dark cards */
+.app-card--dark .alert-danger {
+  background: rgba(220,53,69,0.15);
+  color: #ffd2d7;
+  border-color: rgba(220,53,69,0.35);
+}
+
+/* =========================================================
+   ROUTINE FORM specifics
+   ========================================================= */
+.rf-muscles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .5rem .75rem;
+  margin-top: .5rem;
+  max-height: min(52vh, 520px);
+  overflow: auto;
+  padding-right: .25rem;
+}
+@media (min-width: 576px) { .rf-muscles { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 992px) { .rf-muscles { grid-template-columns: repeat(4, 1fr); } }
+.rf-muscle {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .4rem .5rem;
+  border-radius: .5rem;
+  background: rgba(255,255,255,.8);
+}
+.rf-muscle input { transform: scale(1.15); }
+
+/* =========================================================
+   LOG FORM specifics (sliders)
+   ========================================================= */
+.lf-range-wrap { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .75rem; }
+.lf-range {
+  width: 100%; height: 6px; appearance: none;
+  background: linear-gradient(90deg, #d1e7dd, #0d6efd);
+  border-radius: 999px; outline: none;
+}
+.lf-range::-webkit-slider-thumb {
+  appearance: none; width: 22px; height: 22px; border-radius: 50%;
+  background: #0d6efd; border: 2px solid #fff; box-shadow: 0 1px 5px rgba(0,0,0,.2); cursor: pointer;
+}
+.lf-range::-moz-range-thumb {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #0d6efd; border: 2px solid #fff; box-shadow: 0 1px 5px rgba(0,0,0,.2); cursor: pointer;
+}
+.lf-range-value { min-width: 3ch; text-align: right; font-weight: 600; }
+.lf-presets { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .5rem; }
+
+/* ========= Utilities ========= */
+.app-alert { max-width: 720px; margin-inline: auto; }
+
+/* ========= Tables ========= */
+.table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table-responsive table { min-width: 600px; }
+
+
+
+
+
+/* --- Fix 1: Forms inside DARK cards should NOT be yellow --- */
+.app-card--dark .app-form {
+  background: rgba(255,255,255,0.04);         /* subtle dark glass */
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #f8f9fa;                              /* readable on dark */
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.25);
+}
+.app-card--dark .app-form .form-label { color: #f1f3f5; }
+
+/* inputs/selects/textarea already styled earlier for dark cards,
+   but reinforcing placeholders here for clarity */
+.app-card--dark .form-control::placeholder,
+.app-card--dark textarea::placeholder {
+  color: rgba(248,249,250,0.6);
+}
+
+/* --- Fix 2: White list items inside DARK cards must have DARK text --- */
+.app-card--dark .app-item {
+  background: #ffffff;                         /* keep the white mini-cards */
+  color: #212529;                              /* force dark text */
+  border-color: rgba(0,0,0,0.08);
+}
+.app-card--dark .app-item h5,
+.app-card--dark .app-item p,
+.app-card--dark .app-item span {
+  color: #212529;                              /* ensure all text is dark */
+}
+
+/* Optional: give those white mini-cards a tiny elevation in dark box */
+.app-card--dark .app-item:hover {
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+
+
+/* Default: labels are dark on light forms/cards */
+.app-form label,
+.app-form .form-label {
+  color: #212529;
+}
+
+/* In dark cards: labels turn light for contrast */
+.app-card--dark .app-form label,
+.app-card--dark .app-form .form-label {
+  color: #f1f3f5;
+}
+
+
+
+

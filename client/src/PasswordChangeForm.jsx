@@ -1,29 +1,25 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BASE_API_URL } from "./components/UserInfo";
 
-    const DEFAULT_REQUEST_BODY = {
-        currentPassword: "",
-        newPassword: "",
-        repeatNewPassword: ""
-    }
+const DEFAULT_REQUEST_BODY = {
+  currentPassword: "",
+  newPassword: "",
+  repeatNewPassword: "",
+};
 
 const PasswordChangeForm = () => {
-    const navigate = useNavigate();
+  const [requestBody, setRequestBody] = useState(DEFAULT_REQUEST_BODY);
+  const [errors, setErrors] = useState([]);
+  const changePasswordUrl = `${BASE_API_URL}/user/me/changepassword`;
 
-    const [requestBody, setRequestBody] = useState(DEFAULT_REQUEST_BODY);
-    const changePasswordUrl = `${BASE_API_URL}/user/me/changepassword`;
-    const [errors, setErrors] = useState([]);
-
-
-    const handleChange = (event) => {
-    const newRequestBody = { ...requestBody };
-    newRequestBody[event.target.id] = event.target.value;
-    setRequestBody(newRequestBody);
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setRequestBody((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
     if (requestBody.newPassword !== requestBody.repeatNewPassword) {
       setErrors({
@@ -32,34 +28,33 @@ const PasswordChangeForm = () => {
       });
       return;
     }
-    delete requestBody.repeatNewPassword;
 
-    // HTTP change the password
+    // build payload without mutating state
+    const { currentPassword, newPassword } = requestBody;
+    const payload = { currentPassword, newPassword };
+
     const init = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("me")}`,
       },
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify(payload),
     };
+
     fetch(changePasswordUrl, init)
-      .then((response) => {
-        if (response.status === 200) {
-          return null;
-        } else if (response.status === 400) {
-          return response.json();
-        } else {
-          return Promise.reject(`Unexpected Status Error: ${response.status}`);
-        }
-      })
+      .then((r) =>
+        r.status === 200
+          ? null
+          : r.status === 400
+          ? r.json()
+          : Promise.reject(r.status)
+      )
       .then((data) => {
         if (!data) {
-          // Display sucess message
-          window.alert("Password updated successfully!");
-          // successful logout and navigate to login page 
+          alert("Password updated successfully!");
           sessionStorage.clear();
-          window.location.href = "/";
+          window.location.href = "/"; // go to login
         } else if (data.messages) {
           setErrors(data);
         }
@@ -69,65 +64,71 @@ const PasswordChangeForm = () => {
 
   return (
     <>
-      <section className="container-sm mt-5">
-        <div className="text-center mb-4">
-          <h2>Change Password</h2>
+      <h2 className="app-title">Change Password</h2>
+
+      {errors.messages?.length ? (
+        <div className="alert alert-danger app-alert" role="alert">
+          <ul className="mb-0">
+            {errors.messages.map((e) => (
+              <li key={e}>{e}</li>
+            ))}
+          </ul>
         </div>
-        {errors.messages && errors.messages.length !== 0 && (
-          <div className="row d-flex justify-content-center">
-            <div className="alert alert-danger mt-4 mb-4 col-4">
-              <ul>
-                {errors.messages.map((e) => (
-                  <li key={e}>{e}</li>
-                ))}
-              </ul>
-            </div>
+      ) : null}
+      <div className="app-card app-card--dark">
+        <form onSubmit={handleSubmit} className="app-form">
+          <div className="mb-3">
+            <label htmlFor="currentPassword" className="form-label">
+              Old password
+            </label>
+            <input
+              type="password"
+              className="form-control"
+              id="currentPassword"
+              autoComplete="current-password"
+              onChange={handleChange}
+              value={requestBody.currentPassword}
+            />
           </div>
-        )}
-        <div className="row justify-content-center">
-          <form
-            onSubmit={handleSubmit}
-            className="col-4 border border-muted rounded p-4"
-          >
-            <fieldset className="mb-4">
-              <label htmlFor="currentPassword">Old password</label>
-              <input
-                type="password"
-                className="form-control"
-                name="currentPassword"
-                id="currentPassword"
-                onChange={handleChange}
-              />
-            </fieldset>
-            <fieldset className="mb-4">
-              <label htmlFor="newPassword">New password</label>
-              <input
-                type="password"
-                className="form-control"
-                name="newPassword"
-                id="newPassword"
-                onChange={handleChange}
-              />
-            </fieldset>
-            <fieldset className="mb-4">
-              <label htmlFor="repeatNewPassword">Repeat new password</label>
-              <input
-                type="password"
-                className="form-control"
-                name="repeatNewPassword"
-                id="repeatNewPassword"
-                onChange={handleChange}
-              />
-            </fieldset>
-            <button type="submit" className="btn btn-dark me-2">
+
+          <div className="mb-3">
+            <label htmlFor="newPassword" className="form-label">
+              New password
+            </label>
+            <input
+              type="password"
+              className="form-control"
+              id="newPassword"
+              autoComplete="new-password"
+              onChange={handleChange}
+              value={requestBody.newPassword}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="repeatNewPassword" className="form-label">
+              Repeat new password
+            </label>
+            <input
+              type="password"
+              className="form-control"
+              id="repeatNewPassword"
+              autoComplete="new-password"
+              onChange={handleChange}
+              value={requestBody.repeatNewPassword}
+            />
+          </div>
+
+          <div className="app-actions mt-2">
+            <button type="submit" className="btn btn-success">
               Submit
             </button>
-            <Link type="button" className="btn btn-dark" to={"/profile"}>
+            <Link to="/profile" className="btn btn-outline-secondary">
               Cancel
             </Link>
-          </form>
-        </div>
-      </section>
+          </div>
+        </form>
+      </div>
     </>
   );
 };

@@ -1,11 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_API_URL } from "./components/UserInfo";
 
-const DEFAULT_ROUTINE = {
-  title: "",
-  muscles: [...[]]
-}
+const DEFAULT_ROUTINE = {routineId: 0, userId: 0, title: "", muscles: [] };
 
 function RoutineForm() {
   const [routines, setRoutines] = useState([]);
@@ -13,151 +10,131 @@ function RoutineForm() {
   const [editRoutineId, setEditRoutineId] = useState(0);
   const [muscles, setMuscles] = useState([]);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const url = `${BASE_API_URL}/user`
+
+  const url = `${BASE_API_URL}/user`;
   const muscleUrl = `${BASE_API_URL}/muscles`;
 
-  // initial page load
   useEffect(() => {
-    // HTTP request to get muscles
     const init = {
       method: "GET",
-      headers: {
-        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
-      }
-    }
-    fetch(muscleUrl, init)
-      .then(response => {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          return Promise.reject(`Unexpected Status Code: ${response.status}`);
-        }
-      }).then(data => {
-        if (data) {
-          setMuscles(data);
-        }
-      }).catch(console.log);
-
-    // get routines
-    fetchRoutines();
+      headers: { Authorization: `Bearer ${sessionStorage.getItem("me")}` },
+    };
+    Promise.all([
+      fetch(muscleUrl, init).then((r) =>
+        r.ok ? r.json() : Promise.reject(r.status)
+      ),
+      fetch(`${url}/me/routine`, init).then((r) =>
+        r.status === 200 || r.status === 403
+          ? r.json()
+          : Promise.reject(r.status)
+      ),
+    ])
+      .then(([m, rs]) => {
+        setMuscles(m || []);
+        setRoutines(rs || []);
+      })
+      .catch(console.log)
+      .finally(() => setLoading(false));
   }, []);
 
-  // HTTP Request to fetch routines
-  const fetchRoutines = () => {
+  const pretty = (s) => s.toLowerCase().replaceAll("_", " ");
+
+  const handleDelete = (routineId) => {
+    const r = routines.find((x) => x.routineId === routineId);
+    if (!r) return;
+    if (!window.confirm(`Delete ${r.title}?`)) return;
+
+    const init = {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${sessionStorage.getItem("me")}` },
+    };
+    fetch(`${url}/routine/${routineId}`, init)
+      .then((res) => (res.status === 204 ? null : Promise.reject(res.status)))
+      .then(() => {
+        setRoutines((xs) => xs.filter((x) => x.routineId !== routineId));
+        setErrors({});
+      })
+      .catch(console.log);
+  };
+
+  const handleChange = (e) => {
+    const { name, type, checked, value } = e.target;
+    setRoutine((prev) => {
+      if (type === "checkbox") {
+        const set = new Set(prev.muscles);
+        if (checked) set.add(name);
+        else set.delete(name);
+        return { ...prev, muscles: Array.from(set) };
+      }
+      return { ...prev, [name]: value };
+    });
+  };
+
+  const fillFormEdit = (routineId) => {
+    const r = routines.find((x) => x.routineId === routineId);
+    if (!r) return;
+    setRoutine({routineId: r.routineId, userId: r.userId, title: r.title, muscles: [...r.muscles] });
+    setEditRoutineId(routineId);
+    setErrors({});
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const validate = () => {
+    const messages = [];
+    if (!routine.title.trim()) messages.push("Title is required.");
+    if (routine.muscles.length === 0)
+      messages.push("Pick at least one muscle.");
+    return messages;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const messages = validate();
+    if (messages.length) {
+      setErrors({ messages });
+      return;
+    }
+    editRoutineId ? editRoutine() : addRoutine();
+  };
+
+  const refreshAndReset = () => {
     const init = {
       method: "GET",
-      headers: {
-        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
-      }
-    }
+      headers: { Authorization: `Bearer ${sessionStorage.getItem("me")}` },
+    };
     fetch(`${url}/me/routine`, init)
-      .then(response => {
-        if (response.status === 200 || response.status === 403) {
-          return response.json();
-        } else {
-          return Promise.reject(`Unexpected Status Code: ${response.status}`);
-        }
-      }).then(data => {
-        setRoutines(data);
-      }).catch(console.log);
-  }
-
-  // delete routine
-  const handleDelete = (routineId) => {
-    const routineToDelete = routines.find(r => r.routineId === routineId);
-
-    // show confirmation popup first
-    if (window.confirm(`Delete ${routineToDelete.title}?`)) {
-
-      const init = {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${sessionStorage.getItem("me")}`
-        }
-      };
-      fetch(`${url}/routine/${routineId}`, init)
-        .then(response => {
-          if (response.status === 204) { // successful delete
-            const newRoutines = routines.filter(r => r.routineId !== routineId);
-            setRoutines(newRoutines);
-            setErrors([]);
-          } else { // failure to delete
-            return Promise.reject(`Unexpected Status Code: ${response.status}`);
-          }
-        }).catch(console.log);
-    }
-  }
-
-  // update form on form change
-  const handleChange = (event) => {
-    const newRoutine = { ...routine };
-    newRoutine.muscles = [ ... routine.muscles ];
-
-    // special handling for checkboxes, add/remove muscles from array
-    if (event.target.type === "checkbox") {
-      if (event.target.checked) {
-        newRoutine.muscles.push(event.target.name);
-      } else {
-        newRoutine.muscles = newRoutine.muscles.filter(m => m !== event.target.name);
-      }
-
-    } else {
-      newRoutine[event.target.name] = event.target.value;
-    }
-    setRoutine(newRoutine);
-  }
-
-  // fill form when editing
-  const fillFormEdit = (routineId) => {
-    const editRoutine = routines.find(r => r.routineId === routineId);
-    setRoutine(editRoutine);
-    setEditRoutineId(routineId);
-  }
-
-  // add or edit routine on form submit
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    if (editRoutineId) {
-      // update
-      editRoutine();
-    } else {
-      // add
-      addRoutine();
-    }
+      .then((r) => (r.ok || r.status === 403 ? r.json() : []))
+      .then((data) => setRoutines(data || []))
+      .finally(() => {
+        setRoutine(DEFAULT_ROUTINE);
+        setEditRoutineId(0);
+        setErrors({});
+      });
   };
 
   const addRoutine = () => {
-    // HTTP request to add routine
     const init = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
+        Authorization: `Bearer ${sessionStorage.getItem("me")}`,
       },
-      body: JSON.stringify(routine)
+      body: JSON.stringify(routine),
     };
     fetch(`${url}/me/routine`, init)
-      .then(response => {
-        if (response.status === 201 || response.status === 400 || response.status === 401) {
-          return response.json();
-        } else {
-          return Promise.reject(`Unexpected Status Code: ${response.status}`);
-        }
-      }).then(data => {
-        if (data.title) {
-          fetchRoutines(); // fetch updated routine list
-          setRoutine(DEFAULT_ROUTINE); // reset form
-          setErrors([]); // reset errors
-        } else if (data.messages) {
-          setErrors(data);
-        }
-      });
-  }
+      .then((r) =>
+        [201, 400, 401].includes(r.status) ? r.json() : Promise.reject(r.status)
+      )
+      .then((data) => {
+        if (data?.title) refreshAndReset();
+        else if (data?.messages) setErrors(data);
+      })
+      .catch(console.log);
+  };
 
   const editRoutine = () => {
-    // HTTP request to edit routine
     const init = {
       method: "PUT",
       headers: {
@@ -167,117 +144,143 @@ function RoutineForm() {
       body: JSON.stringify(routine),
     };
     fetch(`${url}/me/routine/${editRoutineId}`, init)
-      .then((response) => {
-        if (response.status === 204) {
-          // successful update returns nothing
-          return null;
-        } else if (response.status === 401 || response.status === 403 || response.status === 404) {
-          return response.json();
-        } else {
-          return Promise.reject(`Unexpected Status Error: ${response.status}`);
-        }
-      })
+      .then((r) =>
+        r.status === 204
+          ? null
+          : [401, 403, 404].includes(r.status)
+          ? r.json()
+          : Promise.reject(r.status)
+      )
       .then((data) => {
-        if (!data) {
-          fetchRoutines(); // fetch updated routine list
-          setRoutine(DEFAULT_ROUTINE); // reset form
-          setErrors([]); // reset errors
-          setEditRoutineId(0); // go back to add routine form
-        } else if (data.messages) {
-          setErrors(data);
-        }
+        if (!data) refreshAndReset();
+        else if (data?.messages) setErrors(data);
       })
       .catch(console.log);
-    }
+  };
 
   const cancelAddOrEdit = () => {
     if (editRoutineId > 0) {
-      // reset form when cancelling edit
       setRoutine(DEFAULT_ROUTINE);
       setEditRoutineId(0);
-      setErrors([]);
+      setErrors({});
     } else {
-      // exit page when cancelling add
       navigate("/profile");
     }
-  }
+  };
+
+  const sortedMuscles = useMemo(
+    () => [...muscles].sort((a, b) => pretty(a).localeCompare(pretty(b))),
+    [muscles]
+  );
 
   return (
-    <>
-      <section className="container-sm mt-5">
-        <div className="row justify-content-around">
+    <section className="container py-4">
+      <div className="row g-4 justify-content-center">
+       
+        {/* Left: Add/Edit form */}
+        <div className="col-12 col-lg-5">
+          <h2 className="app-title text-center mb-3">
+            {editRoutineId > 0 ? "Edit Routine" : "Add Routine"}
+          </h2>
+          <div className="app-card app-card--dark">
+            {errors.messages?.length ? (
+              <div className="alert alert-danger app-alert" role="alert">
+                <ul className="mb-0">
+                  {errors.messages.map((e) => (
+                    <li key={e}>{e}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
 
-          <div className="col-4">
-            <div className="text-center mb-4">
-              <h2>Routine List</h2>
-            </div>
+            <form onSubmit={handleSubmit} className="app-form">
+              <div className="mb-3">
+                <label htmlFor="title" className="form-label">
+                  Title
+                </label>
+                <input
+                  id="title"
+                  name="title"
+                  type="text"
+                  className="form-control"
+                  placeholder="e.g. Push day"
+                  value={routine.title}
+                  onChange={handleChange}
+                />
+              </div>
 
-            <div>
-              {routines.map(r => {
-                return (
-                  <div key={r.routineId} className="border border-muted rounded mb-2 p-2 bg-primary-subtle">
-                    <h4>{r.title}</h4>
-                    <p>
-                      {r.muscles.slice(0, -1).map(m => { return <span key={m}>&nbsp;{m.toLowerCase().replace("_", " ")},</span> })}
-                      &nbsp;{r.muscles.length > 0 && (r.muscles[r.muscles.length - 1].toLowerCase().replace("_", " "))}
-                    </p>
-                    <button className="btn btn-outline-warning me-2" onClick={() => { fillFormEdit(r.routineId) }}>
+              <div className="mb-3">
+                <label className="form-label">Muscle groups</label>
+                <div className="rf-muscles">
+                  {sortedMuscles.map((m) => (
+                    <label key={m} className="rf-muscle">
+                      <input
+                        type="checkbox"
+                        name={m}
+                        checked={routine.muscles.includes(m)}
+                        onChange={handleChange}
+                        className="form-check-input"
+                      />
+                      <span>{pretty(m)}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="app-actions mt-2">
+                <button type="submit" className="btn btn-success">
+                  {editRoutineId > 0 ? "Update Routine" : "Add Routine"}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={cancelAddOrEdit}
+                >
+                  {editRoutineId > 0 ? "Cancel Edit" : "Cancel"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+         {/* Right: Routine list */}
+        <div className="col-12 col-lg-5">
+          <h2 className="app-title text-center mb-3">Routine List</h2>
+          <div className="app-card app-card--dark">
+
+            {loading && <div className="text-center py-3">Loading…</div>}
+
+            {!loading && routines.length === 0 && (
+              <p className="mb-0">No routines yet. Create your first one ➜</p>
+            )}
+
+            <div className="mt-2">
+              {routines.map((r) => (
+                <div key={r.routineId} className="app-item mb-2">
+                  <h5 className="mb-1">{r.title}</h5>
+                  <p className="mb-2">{r.muscles.map(pretty).join(", ")}</p>
+                  <div className="app-actions">
+                    <button
+                      className="btn btn-outline-warning"
+                      onClick={() => fillFormEdit(r.routineId)}
+                    >
                       Edit
                     </button>
-                    <button className="btn btn-outline-danger" onClick={() => { handleDelete(r.routineId) }}>
+                    <button
+                      className="btn btn-outline-danger"
+                      onClick={() => handleDelete(r.routineId)}
+                    >
                       Delete
                     </button>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="col-4">
-            <div className="text-center mb-4">
-              <h2>{editRoutineId > 0 ? "Edit Routine" : "Add Routine"}</h2>
-            </div>
-            {errors.messages && errors.messages.length !== 0 && (
-              <div className="row d-flex justify-content-center">
-                <div className="alert alert-danger mt-4 mb-4">
-                  <ul>
-                    {errors.messages.map(e => <li key={e}>{e}</li>)}
-                  </ul>
                 </div>
-              </div>
-            )}
-            <form onSubmit={handleSubmit} className="border border-muted rounded mb-2 p-2 bg-primary-subtle">
-              <fieldset className="mb-4">
-                <label htmlFor="title">Title</label>
-                <input type="text" className="form-control" id="title" name="title" value={routine.title} onChange={handleChange} />
-              </fieldset>
-              {muscles.map(m => {
-                return (
-                  <fieldset key={m}>
-                    <input type="checkbox" className="form-check-input" checked={routine.muscles.includes(m)} id={m} name={m} onChange={handleChange} />
-                    <label htmlFor={m}>&nbsp;{m.toLowerCase().replace("_", " ")}</label>
-                  </fieldset>
-                );
-              })}
-              <button
-                type="submit"
-                className="btn btn-outline-success me-2 mt-2"
-              >
-                {editRoutineId > 0 ? "Update Routine" : "Add Routine"}
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline-danger mt-2"
-                onClick={cancelAddOrEdit}
-              >
-                {editRoutineId > 0 ? "Cancel Edit" : "Cancel"}
-              </button>
-            </form>
+              ))}
+            </div>
           </div>
-
         </div>
-      </section>
-    </>
+
+      </div>
+    </section>
   );
 }
 

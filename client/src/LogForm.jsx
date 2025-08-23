@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_API_URL } from "./components/UserInfo";
-// import "./css/LogForm.css"; // includes .lf-card, .lf-range, etc.
 
 const DEFAULT_LOG = { routineId: 0, duration: "", intensity: "", notes: "" };
 

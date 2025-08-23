@@ -1,30 +1,25 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BASE_API_URL } from "./components/UserInfo";
 
 const DEFAULT_REQUEST_BODY = {
-  email: `${sessionStorage.getItem("user_email")}`,
-  username: `${sessionStorage.getItem("user_username")}`,
+  email: `${sessionStorage.getItem("user_email") || ""}`,
+  username: `${sessionStorage.getItem("user_username") || ""}`,
 };
 
 const EditUserInfoForm = () => {
   const editUserInfoUrl = `${BASE_API_URL}/user/me`;
   const [requestBody, setRequestBody] = useState(DEFAULT_REQUEST_BODY);
   const [errors, setErrors] = useState([]);
-  const navigate = useNavigate();
 
-  console.log(DEFAULT_REQUEST_BODY);
-
-  const handleChange = (event) => {
-    const newRequestBody = { ...requestBody };
-    newRequestBody[event.target.id] = event.target.value;
-    setRequestBody(newRequestBody);
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setRequestBody((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    // HTTP update user info
     const init = {
       method: "PUT",
       headers: {
@@ -33,22 +28,18 @@ const EditUserInfoForm = () => {
       },
       body: JSON.stringify(requestBody),
     };
+
     fetch(editUserInfoUrl, init)
-      .then((response) => {
-        if (response.status === 200) {
-          // successful update returns nothing
-          return null;
-        } else if (response.status === 400) {
-          return response.json();
-        } else {
-          return Promise.reject(`Unexpected Status Error: ${response.status}`);
-        }
-      })
+      .then((r) =>
+        r.status === 200
+          ? null
+          : r.status === 400
+          ? r.json()
+          : Promise.reject(r.status)
+      )
       .then((data) => {
         if (!data) {
-          // Display sucess message
-          window.alert("Your account details have been updated successfully!");
-          // logout and remove all the session key/values
+          alert("Your account details have been updated successfully!");
           sessionStorage.clear();
           window.location.href = "/";
         } else if (data.messages) {
@@ -60,57 +51,57 @@ const EditUserInfoForm = () => {
 
   return (
     <>
-      <section className="container-sm mt-5">
-        <div className="text-center mb-4">
-          <h2>Edit User Info:</h2>
+      <h2 className="app-title">Edit User Info</h2>
+
+      {errors.messages?.length ? (
+        <div className="alert alert-danger app-alert" role="alert">
+          <ul className="mb-0">
+            {errors.messages.map((e) => (
+              <li key={e}>{e}</li>
+            ))}
+          </ul>
         </div>
-        {errors.messages && errors.messages.length !== 0 && (
-          <div className="row d-flex justify-content-center">
-            <div className="alert alert-danger mt-4 mb-4 col-4">
-              <ul>
-                {errors.messages.map((e) => (
-                  <li key={e}>{e}</li>
-                ))}
-              </ul>
-            </div>
+      ) : null}
+      <div className="app-card app-card--dark">
+        <form onSubmit={handleSubmit} className="app-form">
+          <div className="mb-3">
+            <label htmlFor="username" className="form-label">
+              Username
+            </label>
+            <input
+              id="username"
+              type="text"
+              className="form-control"
+              value={requestBody.username}
+              onChange={handleChange}
+              autoComplete="username"
+            />
           </div>
-        )}
-        <div className="row justify-content-center">
-          <form
-            onSubmit={handleSubmit}
-            className="col-4 border border-muted rounded p-4"
-          >
-            <fieldset className="mb-4">
-              <label htmlFor="username">Username</label>
-              <input
-                type="text"
-                className="form-control"
-                name="username"
-                id="username"
-                value={requestBody.username}
-                onChange={handleChange}
-              />
-            </fieldset>
-            <fieldset className="mb-4">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                name="email"
-                id="email"
-                value={requestBody.email}
-                onChange={handleChange}
-              />
-            </fieldset>
-            <button type="submit" className="btn btn-dark me-2">
+
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              className="form-control"
+              value={requestBody.email}
+              onChange={handleChange}
+              autoComplete="email"
+            />
+          </div>
+
+          <div className="app-actions mt-2">
+            <button type="submit" className="btn btn-success">
               Submit
             </button>
-            <Link type="button" className="btn btn-dark" to={"/profile"}>
+            <Link to="/profile" className="btn btn-outline-secondary">
               Cancel
             </Link>
-          </form>
-        </div>
-      </section>
+          </div>
+        </form>
+      </div>
     </>
   );
 };
