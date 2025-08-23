@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_API_URL } from "./components/UserInfo";
+// import "./css/LogForm.css"; // includes .lf-card, .lf-range, etc.
 
-const DEFAULT_LOG = {
-  routineId: 0,
-  duration: 0,
-  intensity: 0,
-  notes: ""
-}
+const DEFAULT_LOG = { routineId: 0, duration: "", intensity: "", notes: "" };
 
 function LogForm() {
   const [log, setLog] = useState(DEFAULT_LOG);
@@ -16,131 +12,222 @@ function LogForm() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // HTTP request to get routines
     const init = {
       method: "GET",
-      headers: {
-        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
-      }
-    }
+      headers: { Authorization: `Bearer ${sessionStorage.getItem("me")}` },
+    };
     fetch(`${BASE_API_URL}/user/me/routine`, init)
-      .then(response => {
-        if (response.status === 200 || response.status === 403) {
-          return response.json();
-        } else {
-          return Promise.reject(`Unexpected Status Code: ${response.status}`);
+      .then((r) =>
+        r.status === 200 || r.status === 403
+          ? r.json()
+          : Promise.reject(r.status)
+      )
+      .then((data) => {
+        setRoutines(data || []);
+        if ((data || []).length > 0) {
+          setLog((prev) => ({ ...prev, routineId: data[0].routineId }));
         }
-      }).then(data => {
-        setRoutines(data);
-        const newLog = { ...log };
-        if (data.length > 0) {
-          newLog.routineId = data[0].routineId; // set initial routine for log
-        }
-        setLog(newLog);
-      }).catch(console.log);    
+      })
+      .catch(console.log);
   }, []);
 
-  // update log on form change
-  const handleChange = (event) => {
-    const newLog = { ...log };
-    newLog[event.target.id] = event.target.value;
-    setLog(newLog);
-  }
+  const handleChange = (e) => {
+    const { id, value } = e.target; // values come in as strings
+    setLog((prev) => ({ ...prev, [id]: value }));
+  };
 
-  const handleSubmit = (event) => {
-    // TODO: add log with HTTP request
-    event.preventDefault();
+  // Optional quick-preset helpers (used by the small buttons)
+  const setPresetMinutes = (m) =>
+    setLog((p) => ({ ...p, duration: String(m) }));
+  const setPresetIntensity = (v) =>
+    setLog((p) => ({ ...p, intensity: String(v) }));
+
+  // Basic client validation
+  const validate = () => {
+    const msgs = [];
+    if (!log.routineId || Number(log.routineId) === 0)
+      msgs.push("Please choose a routine.");
+    const duration = Number(log.duration || 0);
+    if (!duration || duration <= 0)
+      msgs.push("Duration must be a positive number.");
+    const intensity = Number(log.intensity || 0);
+    if (!intensity || intensity < 1 || intensity > 10)
+      msgs.push("Intensity must be between 1 and 10.");
+    return msgs;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const msgs = validate();
+    if (msgs.length) {
+      setErrors(msgs);
+      return;
+    }
 
     const init = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${sessionStorage.getItem("me")}`
+        Authorization: `Bearer ${sessionStorage.getItem("me")}`,
       },
-      body: JSON.stringify(log)
+      body: JSON.stringify({
+        ...log,
+        routineId: Number(log.routineId),
+        duration: Number(log.duration),
+        intensity: Number(log.intensity),
+      }),
     };
     fetch(`${BASE_API_URL}/user/log`, init)
-    .then(response => {
-      if (response.status === 201 || response.status === 400) {
-        return response.json();
-      } else if (response.status === 401 || response.status === 403 || response.status === 404){
-        return response.text();
-      } else {
-        return Promise.reject(`Unexpected Status Code: ${response.status}`);
-      }
-    }).then(data => {
-      if (data.logId) {
-        navigate("/profile");
-      } else if (typeof data === "string"){
-        setErrors([data]);
-      } else {
-        setErrors(data);
-      }
-    }
-    );
+      .then((r) =>
+        r.status === 201 || r.status === 400
+          ? r.json()
+          : [401, 403, 404].includes(r.status)
+          ? r.text()
+          : Promise.reject(r.status)
+      )
+      .then((data) => {
+        if (data?.logId) navigate("/profile");
+        else if (typeof data === "string") setErrors([data]);
+        else setErrors(data || []);
+      })
+      .catch(console.log);
   };
 
   return (
-    <>
-      <section className="container-sm mt-5">
-        <div className="text-center mb-4">
-          <h2>Log A Workout!</h2>
+    <section className="container-md py-4">
+      <h2 className="app-title text-center mb-4">Log a Workout!</h2>
+
+      {errors.length > 0 && (
+        <div className="alert alert-danger lf-alert" role="alert">
+          <ul className="mb-0">
+            {errors.map((e) => (
+              <li key={e}>{e}</li>
+            ))}
+          </ul>
         </div>
+      )}
 
-        {errors.length > 0 && (
-          <div className="row d-flex justify-content-center">
-            <div className="alert alert-danger mt-4 mb-4 col-4">
-              <ul>
-                {errors.map(e => <li key={e}>{e}</li> )}
-              </ul>
-            </div>
-          </div>
-        )}
-
-        <div className="row">
-          <div className="col-4"></div>
-          <form onSubmit={handleSubmit} className="col-4 border border-muted rounded p-4">
-            <fieldset className="mb-4">
-              <label htmlFor="routineId">Routine</label>
-              <select className="form-control" id="routineId" onChange={handleChange}>
-                {routines.map(r => {
-                  return (
+      <div className="row justify-content-center">
+        <div className="col-12 col-md-8 col-lg-6">
+          <div className="app-card app-card--dark">
+            <form onSubmit={handleSubmit} className="lf-form">
+              {/* Routine */}
+              <div className="mb-3">
+                <label htmlFor="routineId" className="form-label">
+                  Routine
+                </label>
+                <select
+                  id="routineId"
+                  className="form-select"
+                  value={log.routineId}
+                  onChange={handleChange}
+                >
+                  {routines.map((r) => (
                     <option key={r.routineId} value={r.routineId}>
                       {r.title}
-                    </option>);
-                })}
-              </select>
-            </fieldset>
-            <fieldset className="mb-4">
-              <label htmlFor="duration">Duration (minutes)</label>
-              <input type="number" className="form-control" id="duration" onChange={handleChange} />
-            </fieldset>
-            <fieldset className="mb-4">
-              <label htmlFor="intensity">Intensity (1-10)</label>
-              <input type="number" className="form-control" id="intensity" onChange={handleChange} />
-            </fieldset>
-            <fieldset className="mb-4">
-              <label htmlFor="notes">Notes</label>
-              <textarea type="text" className="form-control" rows="3" id="notes" onChange={handleChange}/>
-            </fieldset>
-            <button
-              type="submit"
-              className="btn btn-outline-success me-2"
-            >
-              Add Log
-            </button>
-            <Link
-              type="button"
-              className="btn btn-outline-danger"
-              to={"/profile"}
-            >
-              Cancel
-            </Link>
-          </form>
-          <div className="col-4"></div>
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Duration — slider */}
+              <div className="mb-3">
+                <label htmlFor="duration" className="form-label">
+                  Duration (minutes)
+                </label>
+
+                <div className="lf-range-wrap">
+                  <input
+                    id="duration"
+                    type="range"
+                    className="lf-range"
+                    min="10"
+                    max="120"
+                    step="5"
+                    value={String(log.duration || 45)}
+                    onChange={handleChange}
+                  />
+                  <span className="lf-range-value">{log.duration || 45}m</span>
+                </div>
+
+                <div className="lf-presets">
+                  {[20, 30, 45, 60, 90].map((m) => (
+                    <button
+                      key={m}
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={() => setPresetMinutes(m)}
+                    >
+                      {m}m
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Intensity — slider */}
+              <div className="mb-3">
+                <label htmlFor="intensity" className="form-label">
+                  Intensity (1–10)
+                </label>
+
+                <div className="lf-range-wrap">
+                  <input
+                    id="intensity"
+                    type="range"
+                    className="lf-range"
+                    min="1"
+                    max="10"
+                    step="1"
+                    value={String(log.intensity || 5)}
+                    onChange={handleChange}
+                  />
+                  <span className="lf-range-value">{log.intensity || 5}</span>
+                </div>
+
+                <div className="lf-presets">
+                  {[4, 6, 8, 10].map((v) => (
+                    <button
+                      key={v}
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={() => setPresetIntensity(v)}
+                    >
+                      {v}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Notes */}
+              <div className="mb-3">
+                <label htmlFor="notes" className="form-label">
+                  Notes
+                </label>
+                <textarea
+                  id="notes"
+                  rows={3}
+                  className="form-control"
+                  placeholder="Optional notes, PRs, how it felt…"
+                  value={log.notes}
+                  onChange={handleChange}
+                />
+              </div>
+
+              {/* Actions */}
+              <div className="app-actions mt-2">
+                <button type="submit" className="btn btn-success">
+                  Add Log
+                </button>
+                <Link to="/profile" className="btn btn-outline-secondary">
+                  Cancel
+                </Link>
+              </div>
+            </form>
+          </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
 
