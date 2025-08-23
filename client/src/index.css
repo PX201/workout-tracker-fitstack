@@ -299,6 +299,24 @@ tbody { background-color: burlywood !important; }
   color: #f1f3f5;
 }
 
+/* keep it simple */
+.app-offcanvas--dark .offcanvas-title { color: #f8f9fa; }
+.app-offcanvas--dark .offcanvas-body { 
+  color: #f1f3f5; 
+  overflow-y: auto; 
+}
+
+.app-offcanvas--dark .offcanvas-title,
+.app-offcanvas--dark .nav-link {
+  text-align: center;
+  width: 100%;   /* make them full width so centering works */
+  justify-content: center; /* helpful if they’re flex-based */
+}
+
+/* nice widths */
+.offcanvas { max-width: 85vw; }
+@media (min-width: 576px) { .offcanvas { max-width: 400px; } }
+
 
 
 
